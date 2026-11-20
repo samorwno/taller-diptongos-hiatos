@@ -1,0 +1,3123 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Taller interactivo de ortografía: diptongos, triptongos e hiatos. Cuatro estaciones, temporizador de 30 minutos y reporte final.">
+  <title>Taller de Diptongos, Triptongos e Hiatos — Sesión de 30 minutos</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (Riso) */
+      --background: #f7f3ea;
+      --surface-container-low: #ffffff;
+      --surface-container: #efe8d8;
+      --surface-container-high: #fff8b3;
+
+      /* Ink */
+      --on-surface: #1d2a5a;
+      --on-surface-variant: #3d4775;
+
+      /* Rules */
+      --outline: #1d2a5a;
+      --outline-variant: #c3c6d9;
+
+      /* Accents */
+      --primary: #006aa8;
+      --on-primary: #ffffff;
+      --primary-container: #ffe800;
+      --on-primary-container: #1d2a5a;
+      --secondary: #ff52b4;
+      --tertiary: #d00074;
+      --error: #c0262d;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #0078bf;
+      --data-2: #d00074;
+      --data-3: #1d2a5a;
+      --data-4: #d9531e;
+      --data-context: #b4b8cc;
+
+      /* Fonts */
+      --font-headline: 'Archivo', sans-serif;
+      --font-body: 'Work Sans', sans-serif;
+      --font-label: 'Space Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.25rem;
+      --rounded-lg: 0.5rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --misregister: 3px 2px 0 rgb(255 82 180 / 0.85);
+      --ink-border: 2px solid var(--outline);
+      --offset-pink: 5px 5px 0 var(--secondary);
+      --offset-blue: 5px 5px 0 var(--primary);
+      --offset-sm: 3px 3px 0 var(--primary);
+      --offset-sm-pink: 3px 3px 0 var(--secondary);
+      --halftone: radial-gradient(rgb(29 42 90 / 0.07) 1px, transparent 1.2px);
+      --halftone-size: 6px 6px;
+
+      /* Shared semantic tokens */
+      --positive: #0d7a47;
+      --positive-bg: #e3f5ec;
+      --warning: #9e4f00;
+      --warning-bg: #fff3d6;
+      --error-bg: #fdebec;
+      --focus: #006aa8;
+
+      /* Tool type scale */
+      --display-size: clamp(1.85rem, 1.35rem + 1.8vw, 2.75rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { overflow-x: clip; margin: 0; padding: 0; }
+    header { position: static !important; }
+
+    .page-grid {
+      display: grid;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    body {
+      background-color: var(--background);
+      background-image: var(--halftone);
+      background-size: var(--halftone-size);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Typography helpers */
+    .stamp {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: var(--primary);
+      color: var(--on-primary);
+      border-radius: var(--rounded-full);
+      padding: var(--space-xs) var(--space-sm);
+    }
+
+    .stamp--yellow {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border: var(--ink-border);
+    }
+
+    .stamp--outline {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border: var(--ink-border);
+    }
+
+    .misregister {
+      font-family: var(--font-headline);
+      font-weight: 900;
+      font-size: var(--display-size);
+      line-height: 1.02;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+      text-shadow: var(--misregister);
+      margin: var(--space-sm) 0;
+    }
+
+    .lede {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      max-width: 65ch;
+      margin: 0;
+    }
+
+    h2, h3 {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      color: var(--on-surface);
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    h2 { font-size: var(--headline-size); }
+    h3 { font-size: var(--subhead-size); }
+
+    /* Riso ink blocks */
+    .ink-block {
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--offset-pink);
+      padding: var(--space-lg);
+    }
+
+    .ink-block--blue {
+      box-shadow: var(--offset-blue);
+    }
+
+    .ink-block--yellow {
+      background: var(--surface-container-high);
+      box-shadow: var(--offset-blue);
+    }
+
+    .ink-block--sm {
+      box-shadow: var(--offset-sm);
+      padding: var(--space-md);
+    }
+
+    /* Masthead */
+    .masthead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-lg);
+      align-items: end;
+      border-bottom: 2px solid var(--outline);
+      padding-bottom: var(--space-lg);
+    }
+
+    .masthead-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .masthead-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+      text-decoration: none;
+    }
+
+    .btn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn--primary {
+      background: var(--secondary);
+      color: var(--on-surface);
+      box-shadow: var(--offset-sm);
+    }
+
+    .btn--primary:hover:not(:disabled) {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 var(--primary);
+    }
+
+    .btn--primary:active:not(:disabled) {
+      transform: translate(3px, 3px);
+      box-shadow: none;
+    }
+
+    .btn--yellow {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      box-shadow: var(--offset-sm);
+    }
+
+    .btn--yellow:hover:not(:disabled) {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 var(--primary);
+    }
+
+    .btn--yellow:active:not(:disabled) {
+      transform: translate(3px, 3px);
+      box-shadow: none;
+    }
+
+    .btn--blue {
+      background: var(--primary);
+      color: var(--on-primary);
+      box-shadow: var(--offset-sm-pink);
+    }
+
+    .btn--blue:hover:not(:disabled) {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 var(--secondary);
+    }
+
+    .btn--secondary {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      box-shadow: 2px 2px 0 var(--outline);
+    }
+
+    .btn--secondary:hover:not(:disabled) {
+      background: var(--surface-container-high);
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--outline);
+    }
+
+    .btn--danger {
+      background: var(--error-bg);
+      color: var(--error);
+      border-color: var(--error);
+      box-shadow: 2px 2px 0 var(--error);
+    }
+
+    /* Telemetry Strip */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+
+    .metric-tile {
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--offset-sm);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-xs);
+    }
+
+    .metric-tile--timer {
+      background: var(--surface-container-high);
+      box-shadow: var(--offset-sm-pink);
+    }
+
+    .metric-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xs);
+    }
+
+    .metric-value {
+      font-family: var(--font-headline);
+      font-weight: 900;
+      font-size: clamp(1.6rem, 1.3rem + 1vw, 2.15rem);
+      line-height: 1.05;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-note {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--tertiary);
+    }
+
+    .timer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: var(--space-xs);
+    }
+
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      padding: var(--space-xs);
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      cursor: pointer;
+      transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-icon:hover {
+      background: var(--primary-container);
+      transform: translate(1px, 1px);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: var(--surface-container);
+      border: var(--ink-border);
+      border-radius: var(--rounded-full);
+      overflow: hidden;
+      margin-top: var(--space-xs);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width var(--dur-short) var(--ease-out);
+      width: 0%;
+    }
+
+    .progress-fill--pink {
+      background: var(--secondary);
+    }
+
+    /* Alert Banner */
+    .session-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-lg);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--offset-sm);
+      flex-wrap: wrap;
+    }
+
+    .session-banner.is-visible {
+      display: flex;
+    }
+
+    /* Collapsible Quick Guide */
+    .guide-drawer {
+      display: none;
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--offset-blue);
+      padding: var(--space-lg);
+    }
+
+    .guide-drawer.is-open {
+      display: block;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .guide-card {
+      background: var(--background);
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+    }
+
+    .guide-card--accent {
+      background: var(--surface-container-high);
+    }
+
+    .guide-card h3 {
+      margin-bottom: var(--space-xs);
+      color: var(--primary);
+    }
+
+    .guide-card p {
+      margin: 0 0 var(--space-xs) 0;
+      font-size: 0.9rem;
+    }
+
+    .guide-examples {
+      font-family: var(--font-label);
+      font-size: 0.78rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Station Navigation Tabs */
+    .station-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: stretch;
+    }
+
+    .station-tab {
+      flex: 1 1 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      text-align: left;
+      box-shadow: 2px 2px 0 var(--outline);
+      transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .station-tab:hover {
+      background: var(--surface-container);
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--outline);
+    }
+
+    .station-tab.is-active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      box-shadow: var(--offset-sm);
+    }
+
+    .station-tab-kicker {
+      font-family: var(--font-label);
+      font-size: 0.68rem;
+      font-weight: 700;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 4px var(--space-sm);
+      justify-content: space-between;
+      align-items: center;
+      color: var(--primary);
+    }
+
+    .station-tab.is-active .station-tab-kicker {
+      color: var(--on-primary-container);
+    }
+
+    .station-tab-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    /* Main Workspace Container */
+    .workspace-panel {
+      display: none;
+    }
+
+    .workspace-panel.is-active {
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    .station-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      border-bottom: 2px solid var(--outline-variant);
+      padding-bottom: var(--space-md);
+    }
+
+    .station-intro {
+      max-width: 65ch;
+      margin: var(--space-xs) 0 0 0;
+      color: var(--on-surface-variant);
+    }
+
+    /* Item Stepper Pills */
+    .item-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .item-pill {
+      min-width: 44px;
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-sm);
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: 0.875rem;
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .item-pill:hover {
+      background: var(--surface-container);
+    }
+
+    .item-pill.is-current {
+      background: var(--primary);
+      color: var(--on-primary);
+      box-shadow: 2px 2px 0 var(--secondary);
+    }
+
+    .item-pill.is-correct {
+      background: var(--positive-bg);
+      color: var(--positive);
+      border-color: var(--positive);
+    }
+
+    .item-pill.is-wrong {
+      background: var(--error-bg);
+      color: var(--error);
+      border-color: var(--error);
+    }
+
+    .item-pill.is-current.is-correct,
+    .item-pill.is-current.is-wrong {
+      outline: 3px solid var(--primary);
+      outline-offset: 1px;
+    }
+
+    /* Interactive Card Wrap (Container query ready) */
+    .station-card-wrap {
+      container-type: inline-size;
+    }
+
+    .exercise-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    @container (max-width: 720px) {
+      .exercise-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Station 1: Syllable Splitter */
+    .syllable-board {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 2px;
+      padding: var(--space-lg);
+      background: var(--background);
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      margin-block: var(--space-md);
+    }
+
+    .syl-char {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 52px;
+      padding-inline: var(--space-xs);
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem);
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      user-select: none;
+    }
+
+    .syl-char--vowel {
+      background: var(--surface-container-high);
+      color: var(--primary);
+    }
+
+    .syl-cut-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      min-height: 48px;
+      padding: 0;
+      border: 2px dashed var(--outline-variant);
+      border-radius: var(--rounded);
+      background: transparent;
+      cursor: pointer;
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--on-surface-variant);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .syl-cut-btn:hover {
+      background: var(--primary-container);
+      border-color: var(--outline);
+      color: var(--on-surface);
+    }
+
+    .syl-cut-btn.is-cut {
+      background: var(--secondary);
+      border: var(--ink-border);
+      color: var(--on-surface);
+      min-width: 34px;
+      box-shadow: 2px 2px 0 var(--primary);
+    }
+
+    .syl-preview {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container);
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    /* Station 2: Choice Cards */
+    .word-showcase {
+      font-family: var(--font-headline);
+      font-weight: 900;
+      font-size: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
+      line-height: 1.1;
+      color: var(--on-surface);
+      margin: var(--space-sm) 0;
+      letter-spacing: -0.01em;
+    }
+
+    .vowel-focus {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      padding: 0 var(--space-xs);
+      border-radius: var(--rounded);
+      border-bottom: 3px solid var(--primary);
+    }
+
+    .field-group {
+      margin-top: var(--space-md);
+    }
+
+    .field-label {
+      display: block;
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface);
+      margin-bottom: var(--space-sm);
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+
+    .choice-btn {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--outline-variant);
+      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .choice-btn:hover:not(:disabled) {
+      background: var(--surface-container);
+      transform: translate(1px, 1px);
+    }
+
+    .choice-btn.is-selected {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      box-shadow: var(--offset-sm);
+    }
+
+    .choice-btn.is-correct-choice {
+      background: var(--positive-bg);
+      border-color: var(--positive);
+      color: var(--positive);
+      box-shadow: 2px 2px 0 var(--positive);
+    }
+
+    .choice-btn.is-wrong-choice {
+      background: var(--error-bg);
+      border-color: var(--error);
+      color: var(--error);
+      box-shadow: 2px 2px 0 var(--error);
+    }
+
+    /* Station 3: Vowel Accent Picker */
+    .tilde-letter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+      padding: var(--space-lg);
+      background: var(--background);
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      margin-block: var(--space-md);
+    }
+
+    .letter-tile {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 56px;
+      padding-inline: var(--space-xs);
+      font-family: var(--font-headline);
+      font-weight: 900;
+      font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem);
+      border-radius: var(--rounded);
+      border: 2px solid var(--outline-variant);
+      background: var(--surface-container);
+      color: var(--on-surface-variant);
+    }
+
+    .letter-tile--vowel {
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      color: var(--on-surface);
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--primary);
+      transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .letter-tile--vowel:hover:not(:disabled) {
+      background: var(--primary-container);
+      transform: translate(1px, 1px);
+    }
+
+    .letter-tile--vowel.is-accented {
+      background: var(--secondary);
+      color: var(--on-surface);
+      box-shadow: var(--offset-sm);
+    }
+
+    /* Station 4: Text Correction */
+    .text-level-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .passage-box {
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      line-height: 2.15;
+      font-size: 1.08rem;
+      max-width: 72ch;
+    }
+
+    .word-token {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      margin: 1px 1px;
+      font-family: var(--font-body);
+      font-size: inherit;
+      font-weight: 500;
+      background: transparent;
+      border: 2px solid transparent;
+      border-radius: var(--rounded);
+      cursor: pointer;
+      line-height: 1.35;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .word-token:hover {
+      background: var(--surface-container);
+      border-color: var(--outline-variant);
+    }
+
+    .word-token.is-active-edit {
+      outline: 3px solid var(--primary);
+      outline-offset: 1px;
+      background: var(--surface-container-high);
+    }
+
+    .word-token.is-edited {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--outline);
+      font-weight: 700;
+    }
+
+    .word-token.is-verified-ok {
+      background: var(--positive-bg);
+      color: var(--positive);
+      border-color: var(--positive);
+      font-weight: 700;
+    }
+
+    .word-token.is-verified-miss,
+    .word-token.is-verified-false {
+      background: var(--error-bg);
+      color: var(--error);
+      border-color: var(--error);
+      font-weight: 700;
+    }
+
+    .inline-editor {
+      background: var(--surface-container-high);
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--offset-sm);
+      padding: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    /* Feedback Box */
+    .feedback-panel {
+      border: var(--ink-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      background: var(--surface-container);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .feedback-panel--correct {
+      background: var(--positive-bg);
+      border-color: var(--positive);
+    }
+
+    .feedback-panel--wrong {
+      background: var(--error-bg);
+      border-color: var(--error);
+    }
+
+    .feedback-panel--info {
+      background: var(--surface-container-low);
+      border-color: var(--outline);
+    }
+
+    .feedback-title {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .feedback-panel--correct .feedback-title { color: var(--positive); }
+    .feedback-panel--wrong .feedback-title { color: var(--error); }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+      margin-top: var(--space-md);
+    }
+
+    /* Corrections Breakdown List */
+    .correction-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    .correction-item {
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border: var(--ink-border);
+      border-radius: var(--rounded);
+      font-size: 0.875rem;
+    }
+
+    .correction-item--ok {
+      border-left: 5px solid var(--positive);
+    }
+
+    .correction-item--miss {
+      border-left: 5px solid var(--error);
+    }
+
+    /* Final Summary & Riso Overprint Chart */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-lg);
+      align-items: stretch;
+    }
+
+    .chart-box {
+      width: 100%;
+      min-height: 280px;
+    }
+
+    .chart .mark {
+      fill: var(--data-1);
+      mix-blend-mode: multiply;
+      stroke: none;
+    }
+
+    .chart .mark.series-2 { fill: var(--data-2); }
+    .chart .mark.series-3 { fill: var(--data-3); }
+    .chart .mark.series-4 { fill: var(--data-4); }
+
+    .chart-label {
+      font-family: var(--font-label);
+      font-size: 11px;
+      fill: var(--on-surface);
+    }
+
+    .chart-value {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 13px;
+      fill: var(--on-surface);
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9375rem;
+    }
+
+    .summary-table th {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: left;
+      padding: var(--space-sm);
+      border-bottom: 2px solid var(--outline);
+    }
+
+    .summary-table td {
+      padding: var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary-table tr.is-highlight {
+      background: var(--primary-container);
+      font-weight: 700;
+    }
+
+    .footer-sources {
+      border-top: 2px solid var(--outline);
+      padding-top: var(--space-md);
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-md);
+        gap: var(--space-md);
+      }
+      .masthead {
+        grid-template-columns: 1fr;
+      }
+      .telemetry-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .ink-block {
+        padding: var(--space-md);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-grid">
+    <!-- Masthead -->
+    <header class="masthead">
+      <div>
+        <div class="masthead-meta">
+          <span class="stamp">Taller práctico · 30 minutos</span>
+          <span class="stamp stamp--yellow">Ortografía del español</span>
+        </div>
+        <h1 class="misregister">Diptongos, triptongos e hiatos</h1>
+        <p class="lede">
+          Entrenamiento interactivo en cuatro estaciones: separación silábica, clasificación de encuentros vocálicos, tildación especial de hiatos acentuales y corrección ortográfica de textos.
+        </p>
+      </div>
+      <div class="masthead-actions">
+        <button type="button" class="btn btn--yellow" id="btn-toggle-guide" onclick="toggleGuide()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <span id="label-toggle-guide">Guía rápida de reglas</span>
+        </button>
+        <button type="button" class="btn btn--secondary" id="btn-reset-all" onclick="handleResetAll(this)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          <span>Reiniciar sesión</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Collapsible Reference Guide -->
+    <section id="guide-drawer" class="guide-drawer" aria-label="Guía rápida de reglas ortográficas">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-md); flex-wrap:wrap;">
+        <h2>Guía rápida de referencia</h2>
+        <button type="button" class="btn btn--secondary" onclick="toggleGuide()">Cerrar guía</button>
+      </div>
+      <div class="guide-grid">
+        <article class="guide-card">
+          <h3>1. Tipos de vocales</h3>
+          <p><strong>Abiertas (fuertes):</strong> a, e, o.</p>
+          <p><strong>Cerradas (débiles):</strong> i, u.</p>
+          <p class="guide-examples">La <em>h</em> muda intercalada no impide diptongos ni hiatos (ahumados, búho). La <em>u</em> muda en <em>qu/gu</em> no cuenta (queso).</p>
+        </article>
+        <article class="guide-card">
+          <h3>2. Diptongo</h3>
+          <p>Dos vocales pronunciadas en una <strong>misma sílaba</strong>: abierta + cerrada átona (o viceversa), o dos cerradas distintas (<em>iu, ui</em>).</p>
+          <p class="guide-examples">Sigue reglas generales. Tilde en la abierta (después) o en la segunda cerrada (jesuítico, cuídate).</p>
+        </article>
+        <article class="guide-card">
+          <h3>3. Triptongo</h3>
+          <p>Tres vocales en una <strong>misma sílaba</strong>: cerrada átona + abierta + cerrada átona.</p>
+          <p class="guide-examples">Tilde siempre en la abierta (averigüéis, limpiáis). Con <em>y</em> final sin tilde (buey, Uruguay).</p>
+        </article>
+        <article class="guide-card guide-card--accent">
+          <h3>4. Hiato y tildación especial</h3>
+          <p>Dos vocales en <strong>sílabas distintas</strong>. Si son dos iguales (chiita) o dos abiertas (teatro), siguen reglas generales.</p>
+          <p class="guide-examples"><strong>Hiato acentual:</strong> cerrada tónica + abierta átona (o viceversa). ¡Siempre lleva tilde en la cerrada (<em>í, ú</em>), aunque rompa la regla general! Ej.: maíz, búho, energía.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Session Telemetry Bar -->
+    <section class="telemetry-grid" aria-label="Estado de la sesión de 30 minutos">
+      <div class="metric-tile metric-tile--timer">
+        <div class="metric-label">
+          <span>Tiempo restante</span>
+          <span id="timer-status-tag">En pausa</span>
+        </div>
+        <div class="timer-row">
+          <div class="metric-value" id="timer-display">30:00</div>
+          <div class="timer-controls">
+            <button type="button" class="btn-icon" id="btn-timer-toggle" onclick="toggleTimer()" aria-label="Iniciar o pausar temporizador">
+              <svg id="icon-timer-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+              <svg id="icon-timer-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill progress-fill--pink" id="timer-progress-bar"></div>
+        </div>
+      </div>
+
+      <div class="metric-tile">
+        <div class="metric-label">Puntuación actual</div>
+        <div class="metric-value"><span id="score-total">0</span> <span style="font-size:1rem; font-weight:700; color:var(--on-surface-variant);">/ 100</span></div>
+        <div class="metric-note" id="score-note">0% del taller completado</div>
+      </div>
+
+      <div class="metric-tile">
+        <div class="metric-label">Progreso global</div>
+        <div class="metric-value"><span id="items-completed">0</span> <span style="font-size:1rem; font-weight:700; color:var(--on-surface-variant);">/ 33</span></div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="items-progress-bar"></div>
+        </div>
+      </div>
+
+      <div class="metric-tile">
+        <div class="metric-label">Precisión</div>
+        <div class="metric-value" id="accuracy-display">—</div>
+        <div class="metric-note" id="accuracy-note">Responde para calcular</div>
+      </div>
+    </section>
+
+    <!-- Time Expired / Session Complete Banner -->
+    <div id="time-banner" class="session-banner" role="status" aria-live="polite">
+      <div>
+        <strong>¡Tiempo cumplido (30:00)!</strong>
+        <span>Completaste el bloque de 30 minutos. Puedes revisar tu diagnóstico final o seguir practicando sin límite.</span>
+      </div>
+      <button type="button" class="btn btn--blue" onclick="switchStation('resumen')">Ver puntuación final</button>
+    </div>
+
+    <!-- Station Navigation -->
+    <nav class="station-nav" aria-label="Estaciones de práctica">
+      <button type="button" class="station-tab is-active" id="tab-s1" onclick="switchStation('s1')">
+        <span class="station-tab-kicker"><span>Estación 1 · ~7 min</span><span id="badge-s1">0/10</span></span>
+        <span class="station-tab-title">Separación silábica</span>
+      </button>
+      <button type="button" class="station-tab" id="tab-s2" onclick="switchStation('s2')">
+        <span class="station-tab-kicker"><span>Estación 2 · ~7 min</span><span id="badge-s2">0/10</span></span>
+        <span class="station-tab-title">Clasificación vocálica</span>
+      </button>
+      <button type="button" class="station-tab" id="tab-s3" onclick="switchStation('s3')">
+        <span class="station-tab-kicker"><span>Estación 3 · ~8 min</span><span id="badge-s3">0/10</span></span>
+        <span class="station-tab-title">Tildación especial</span>
+      </button>
+      <button type="button" class="station-tab" id="tab-s4" onclick="switchStation('s4')">
+        <span class="station-tab-kicker"><span>Estación 4 · ~8 min</span><span id="badge-s4">0/3</span></span>
+        <span class="station-tab-title">Corrección de textos</span>
+      </button>
+      <button type="button" class="station-tab" id="tab-resumen" onclick="switchStation('resumen')">
+        <span class="station-tab-kicker"><span>Cierre</span><span id="badge-resumen">Reporte</span></span>
+        <span class="station-tab-title">Puntuación final</span>
+      </button>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main>
+      <!-- STATION 1: SEPARACIÓN SILÁBICA -->
+      <section id="panel-s1" class="workspace-panel is-active" aria-labelledby="title-s1">
+        <div class="ink-block station-card-wrap">
+          <div class="station-header">
+            <div>
+              <span class="stamp">Actividad 1 de 4 · 25 puntos</span>
+              <h2 id="title-s1" style="margin-top:var(--space-sm);">Separación silábica interactiva</h2>
+              <p class="station-intro">
+                Haz clic en los espacios punteados entre las letras para separar la palabra en sílabas. Recuerda: los diptongos y triptongos permanecen unidos; los hiatos se separan y la <em>h</em> muda no impide ninguno de los dos.
+              </p>
+            </div>
+            <div class="item-pills" id="s1-pills" aria-label="Palabras de la estación 1"></div>
+          </div>
+
+          <div class="exercise-split" style="margin-top:var(--space-lg);">
+            <div>
+              <div class="field-label" id="s1-counter-label">Palabra 1 de 10</div>
+              <p style="margin:0; color:var(--on-surface-variant);" id="s1-hint-text"></p>
+              <div class="syllable-board" id="s1-board" role="group" aria-label="Separador silábico por letras"></div>
+              <div class="syl-preview">
+                <span>Vista previa: <strong id="s1-preview-text">—</strong></span>
+                <span id="s1-syl-count" style="color:var(--primary);">1 sílaba</span>
+              </div>
+              <div class="action-row">
+                <button type="button" class="btn btn--primary" id="s1-check-btn" onclick="checkS1()">Comprobar sílabas</button>
+                <button type="button" class="btn btn--secondary" onclick="clearS1Cuts()">Borrar cortes</button>
+                <button type="button" class="btn btn--yellow" id="s1-next-btn" onclick="nextS1()">Siguiente palabra →</button>
+              </div>
+            </div>
+
+            <div>
+              <div id="s1-feedback" class="feedback-panel feedback-panel--info" aria-live="polite">
+                <div class="feedback-title">Instrucciones</div>
+                <p style="margin:0;">Marca los cortes silábicos tocando entre las letras y presiona <strong>Comprobar sílabas</strong> para recibir retroalimentación inmediata.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATION 2: CLASIFICACIÓN VOCÁLICA -->
+      <section id="panel-s2" class="workspace-panel" aria-labelledby="title-s2">
+        <div class="ink-block ink-block--blue station-card-wrap">
+          <div class="station-header">
+            <div>
+              <span class="stamp">Actividad 2 de 4 · 25 puntos</span>
+              <h2 id="title-s2" style="margin-top:var(--space-sm);">Clasificación de combinaciones vocálicas</h2>
+              <p class="station-intro">
+                Analiza la secuencia resaltada en cada palabra. Elige primero el tipo de encuentro vocálico (¡cuidado con la <em>u</em> muda de <em>qu/gu</em> y la <em>y</em> final!) y luego la combinación exacta de vocales.
+              </p>
+            </div>
+            <div class="item-pills" id="s2-pills" aria-label="Palabras de la estación 2"></div>
+          </div>
+
+          <div class="exercise-split" style="margin-top:var(--space-lg);">
+            <div>
+              <div class="field-label" id="s2-counter-label">Palabra 1 de 10</div>
+              <div class="word-showcase" id="s2-word-display"></div>
+
+              <div class="field-group">
+                <span class="field-label">1. ¿Qué fenómeno vocálico presenta?</span>
+                <div class="choice-grid" id="s2-cat-choices"></div>
+              </div>
+
+              <div class="field-group">
+                <span class="field-label">2. ¿Cuál es la combinación exacta?</span>
+                <div class="choice-grid" id="s2-combo-choices"></div>
+              </div>
+
+              <div class="action-row">
+                <button type="button" class="btn btn--primary" id="s2-check-btn" onclick="checkS2()">Comprobar clasificación</button>
+                <button type="button" class="btn btn--yellow" onclick="nextS2()">Siguiente palabra →</button>
+              </div>
+            </div>
+
+            <div>
+              <div id="s2-feedback" class="feedback-panel feedback-panel--info" aria-live="polite">
+                <div class="feedback-title">Instrucciones</div>
+                <p style="margin:0;">Selecciona tanto el tipo de encuentro vocálico como su estructura interna, luego comprueba tu respuesta.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATION 3: TILDACIÓN ESPECIAL -->
+      <section id="panel-s3" class="workspace-panel" aria-labelledby="title-s3">
+        <div class="ink-block ink-block--yellow station-card-wrap">
+          <div class="station-header">
+            <div>
+              <span class="stamp">Actividad 3 de 4 · 25 puntos</span>
+              <h2 id="title-s3" style="margin-top:var(--space-sm);">Tildación especial de hiatos acentuales</h2>
+              <p class="station-intro">
+                Haz clic sobre la vocal que debe llevar tilde (´) o selecciona <strong>No lleva tilde</strong>. Presta especial atención a los hiatos acentuales, que exigen tilde en la vocal cerrada tónica aunque rompan las reglas generales.
+              </p>
+            </div>
+            <div class="item-pills" id="s3-pills" aria-label="Palabras de la estación 3"></div>
+          </div>
+
+          <div class="exercise-split" style="margin-top:var(--space-lg);">
+            <div>
+              <div class="field-label" id="s3-counter-label">Palabra 1 de 10</div>
+              <p style="margin:0; color:var(--on-surface-variant);" id="s3-context-clue"></p>
+
+              <div class="tilde-letter-row" id="s3-letter-row" role="group" aria-label="Selector de vocal para tildar"></div>
+
+              <div class="action-row">
+                <button type="button" class="btn btn--secondary" id="s3-no-tilde-btn" onclick="selectS3NoTilde()">No lleva tilde</button>
+                <button type="button" class="btn btn--primary" id="s3-check-btn" onclick="checkS3()">Comprobar tildación</button>
+                <button type="button" class="btn btn--yellow" onclick="nextS3()">Siguiente palabra →</button>
+              </div>
+            </div>
+
+            <div>
+              <div id="s3-feedback" class="feedback-panel feedback-panel--info" aria-live="polite">
+                <div class="feedback-title">Instrucciones</div>
+                <p style="margin:0;">Toca una vocal iluminada para colocar la tilde, o indica si la palabra se escribe sin tilde.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STATION 4: CORRECCIÓN DE TEXTOS -->
+      <section id="panel-s4" class="workspace-panel" aria-labelledby="title-s4">
+        <div class="ink-block station-card-wrap">
+          <div class="station-header">
+            <div>
+              <span class="stamp">Actividad 4 de 4 · 25 puntos</span>
+              <h2 id="title-s4" style="margin-top:var(--space-sm);">Corrección ortográfica de textos</h2>
+              <p class="station-intro">
+                Lee cada párrafo, identifica las palabras a las que les falta tilde (especialmente hiatos acentuales, diptongos y esdrújulas) y haz clic sobre ellas para tildarlas. Cuando termines, verifica el texto completo.
+              </p>
+            </div>
+          </div>
+
+          <div class="text-level-tabs" id="s4-level-tabs" style="margin-top:var(--space-md);"></div>
+
+          <div class="passage-box" id="s4-passage" aria-label="Texto para corregir ortografía"></div>
+
+          <div id="s4-editor" class="inline-editor" style="display:none;" aria-live="polite">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm);">
+              <div>
+                <span class="field-label" style="margin-bottom:2px;">Editando palabra seleccionada</span>
+                <div style="font-family:var(--font-headline); font-weight:800; font-size:1.35rem;" id="s4-editor-preview"></div>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:var(--space-sm); align-items:center;" id="s4-editor-vowels"></div>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button type="button" class="btn btn--primary" id="s4-check-btn" onclick="checkS4Text()">Verificar texto</button>
+            <button type="button" class="btn btn--secondary" onclick="resetS4CurrentText()">Limpiar ediciones de este texto</button>
+            <button type="button" class="btn btn--yellow" onclick="switchStation('resumen')">Ir al resumen final →</button>
+          </div>
+
+          <div id="s4-feedback" class="feedback-panel feedback-panel--info" style="margin-top:var(--space-md);" aria-live="polite">
+            <div class="feedback-title">Estado del texto</div>
+            <p style="margin:0;">Haz clic en cualquier palabra del texto para agregar o corregir una tilde.</p>
+          </div>
+
+          <div id="s4-breakdown" class="correction-list"></div>
+        </div>
+      </section>
+
+      <!-- SUMMARY: PUNTUACIÓN FINAL -->
+      <section id="panel-resumen" class="workspace-panel" aria-labelledby="title-resumen">
+        <div class="ink-block ink-block--blue">
+          <div class="station-header">
+            <div>
+              <span class="stamp stamp--yellow">Resultados de la sesión</span>
+              <h2 id="title-resumen" style="margin-top:var(--space-sm);">Puntuación final y diagnóstico</h2>
+              <p class="station-intro" id="summary-verdict">
+                Completa las cuatro estaciones para obtener tu calificación final sobre 100 puntos y el diagnóstico por habilidad.
+              </p>
+            </div>
+            <div class="action-row" style="margin-top:0;">
+              <button type="button" class="btn btn--blue" onclick="exportSummaryReport()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Exportar reporte</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="summary-grid" style="margin-top:var(--space-lg);">
+            <div>
+              <h3 style="margin-bottom:var(--space-sm);">Desempeño por estación (sobre 25 puntos)</h3>
+              <div class="chart-box" id="summary-chart-container"></div>
+            </div>
+
+            <div>
+              <h3 style="margin-bottom:var(--space-sm);">Desglose de calificación</h3>
+              <table class="summary-table">
+                <thead>
+                  <tr>
+                    <th>Estación</th>
+                    <th>Avance</th>
+                    <th>Puntaje</th>
+                  </tr>
+                </thead>
+                <tbody id="summary-table-body"></tbody>
+              </table>
+              <div id="diagnostic-box" class="feedback-panel feedback-panel--info" style="margin-top:var(--space-md);">
+                <div class="feedback-title">Recomendación pedagógica</div>
+                <p id="diagnostic-text" style="margin:0;">Avanza en los ejercicios para generar recomendaciones personalizadas.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer-sources">
+      <span>Fuentes pedagógicas consultadas: Ortografía de la lengua española (RAE y ASALE, 2010), Reglas de Ortografía (Juan Antonio Marín Candón), Enciclopedia Banrepcultural y Taller de Diptongos e Hiatos (Juicy Spanish).</span>
+      <span>Sesión diseñada para práctica de 30 minutos · Español (Colombia)</span>
+    </footer>
+  </div>
+
+  <script>
+    // ==============================
+    // DATA BANKS (Backtick literals)
+    // ==============================
+
+    const S1_DATA = [
+      {
+        word: `línea`,
+        tokens: [`l`, `í`, `n`, `e`, `a`],
+        correctCuts: [1, 3],
+        hint: `Observa las dos vocales finales: ¿son abiertas o cerradas?`,
+        explanation: `«lí-ne-a» (3 sílabas): las vocales e y a son abiertas distintas y forman un hiato, por lo que se separan en sílabas diferentes.`
+      },
+      {
+        word: `ahumados`,
+        tokens: [`a`, `h`, `u`, `m`, `a`, `d`, `o`, `s`],
+        correctCuts: [2, 4],
+        hint: `Pista: la «h» muda intercalada no impide ni el diptongo ni el hiato.`,
+        explanation: `«ahu-ma-dos» (3 sílabas): la h intercalada no impide el diptongo entre la vocal abierta a y la cerrada átona u.`
+      },
+      {
+        word: `maestro`,
+        tokens: [`m`, `a`, `e`, `s`, `t`, `r`, `o`],
+        correctCuts: [1, 3],
+        hint: `Atiende al encuentro entre «a» y «e».`,
+        explanation: `«ma-es-tro» (3 sílabas): dos vocales abiertas distintas (a-e) siempre constituyen un hiato y pertenecen a sílabas distintas.`
+      },
+      {
+        word: `búho`,
+        tokens: [`b`, `ú`, `h`, `o`],
+        correctCuts: [1],
+        hint: `La «ú» es tónica frente a la «o» átona.`,
+        explanation: `«bú-ho» (2 sílabas): hay hiato acentual entre la vocal cerrada tónica ú y la abierta átona o; la h intercalada no impide su separación.`
+      },
+      {
+        word: `ciudad`,
+        tokens: [`c`, `i`, `u`, `d`, `a`, `d`],
+        correctCuts: [2],
+        hint: `Dos vocales cerradas distintas juntas.`,
+        explanation: `«ciu-dad» (2 sílabas): dos vocales cerradas distintas (i-u) siempre forman diptongo en la ortografía española.`
+      },
+      {
+        word: `vehículo`,
+        tokens: [`v`, `e`, `h`, `í`, `c`, `u`, `l`, `o`],
+        correctCuts: [1, 3, 5],
+        hint: `La tilde en la «í» marca un hiato a pesar de la «h».`,
+        explanation: `«ve-hí-cu-lo» (4 sílabas): la vocal cerrada tónica í se separa de la abierta átona e formando hiato acentual.`
+      },
+      {
+        word: `triunfo`,
+        tokens: [`t`, `r`, `i`, `u`, `n`, `f`, `o`],
+        correctCuts: [4],
+        hint: `El grupo consonántico «tr» inicia sílaba junto con las vocales.`,
+        explanation: `«triun-fo» (2 sílabas): las vocales cerradas distintas i-u permanecen unidas en diptongo dentro de la primera sílaba.`
+      },
+      {
+        word: `averigüéis`,
+        tokens: [`a`, `v`, `e`, `r`, `i`, `g`, `ü`, `é`, `i`, `s`],
+        correctCuts: [0, 2, 4],
+        hint: `La diéresis (ü) indica que la «u» sí se pronuncia.`,
+        explanation: `«a-ve-ri-güéis» (4 sílabas): la última sílaba contiene el triptongo üéi (cerrada + abierta + cerrada), inseparable.`
+      },
+      {
+        word: `coordinar`,
+        tokens: [`c`, `o`, `o`, `r`, `d`, `i`, `n`, `a`, `r`],
+        correctCuts: [1, 3, 5],
+        hint: `¿Qué ocurre cuando se juntan dos vocales iguales?`,
+        explanation: `«co-or-di-nar» (4 sílabas): dos vocales iguales juntas (o-o) siempre forman hiato y deben separarse.`
+      },
+      {
+        word: `vivíais`,
+        tokens: [`v`, `i`, `v`, `í`, `a`, `i`, `s`],
+        correctCuts: [1, 3],
+        hint: `¡Cuidado! Tres vocales seguidas no siempre son triptongo.`,
+        explanation: `«vi-ví-ais» (3 sílabas): como la primera í es tónica, se separa de la a (hiato acentual) y luego ai forma diptongo.`
+      }
+    ];
+
+    const S2_DATA = [
+      {
+        word: `caimán`,
+        before: `c`,
+        focus: `ai`,
+        after: `mán`,
+        correctCat: `Diptongo`,
+        combos: [
+          `Cerrada tónica (í) + abierta (a)`,
+          `Abierta (a) + cerrada átona (i)`,
+          `Dos vocales cerradas distintas`,
+          `Dos vocales abiertas distintas`
+        ],
+        correctCombo: 1,
+        explanation: `«caimán» (cai-mán) une la vocal abierta a con la cerrada átona i en una sola sílaba: diptongo.`
+      },
+      {
+        word: `Uruguay`,
+        before: `Urugu`,
+        focus: `ay`,
+        after: ``,
+        correctCat: `Triptongo`,
+        combos: [
+          `Abierta (a) + cerrada (y) solamente`,
+          `Dos cerradas distintas + abierta`,
+          `Cerrada (u) + abierta (a) + cerrada (y=/i/)`,
+          `Hiato acentual + consonante`
+        ],
+        correctCombo: 2,
+        explanation: `«Uruguay» (U-ru-guay) tiene triptongo porque la «y» final suena como vocal /i/: u + a + i en una misma sílaba.`
+      },
+      {
+        word: `queso`,
+        before: `q`,
+        focus: `ue`,
+        after: `so`,
+        correctCat: `Sin secuencia vocálica`,
+        combos: [
+          `La «u» de «qu» es muda; no hay encuentro vocálico`,
+          `Cerrada átona (u) + abierta (e)`,
+          `Dos vocales abiertas en hiato`,
+          `Cerrada tónica + abierta`
+        ],
+        correctCombo: 0,
+        explanation: `En «queso», «qu» es un dígrafo donde la u no se pronuncia; por eso solo suena la vocal e y no existe diptongo.`
+      },
+      {
+        word: `raíz`,
+        before: `r`,
+        focus: `aí`,
+        after: `z`,
+        correctCat: `Hiato`,
+        combos: [
+          `Abierta (a) + cerrada átona (i)`,
+          `Dos vocales iguales juntas`,
+          `Dos vocales abiertas distintas`,
+          `Abierta átona (a) + cerrada tónica (í)`
+        ],
+        correctCombo: 3,
+        explanation: `«raíz» (ra-íz) es un hiato acentual: la cerrada í recibe el acento prosódico y se separa de la abierta a.`
+      },
+      {
+        word: `albahaca`,
+        before: `alb`,
+        focus: `aha`,
+        after: `ca`,
+        correctCat: `Hiato`,
+        combos: [
+          `Abierta + cerrada átona con h muda`,
+          `Dos vocales iguales (a-a) con h muda`,
+          `Triptongo con h intercalada`,
+          `Sin secuencia vocálica por la h`
+        ],
+        correctCombo: 1,
+        explanation: `«albahaca» (al-ba-ha-ca) reúne dos vocales iguales (a-a); la h muda no impide que formen un hiato simple.`
+      },
+      {
+        word: `ruido`,
+        before: `r`,
+        focus: `ui`,
+        after: `do`,
+        correctCat: `Diptongo`,
+        combos: [
+          `Cerrada tónica (ú) + abierta`,
+          `Dos vocales cerradas iguales`,
+          `Dos vocales cerradas distintas (u + i)`,
+          `Abierta + cerrada átona`
+        ],
+        correctCombo: 2,
+        explanation: `«ruido» (rui-do) combina dos vocales cerradas distintas (u + i), que a efectos ortográficos siempre forman diptongo.`
+      },
+      {
+        word: `despreciéis`,
+        before: `desprec`,
+        focus: `iéi`,
+        after: `s`,
+        correctCat: `Triptongo`,
+        combos: [
+          `Abierta + cerrada + abierta`,
+          `Cerrada (i) + abierta tónica (é) + cerrada (i)`,
+          `Hiato acentual seguido de diptongo`,
+          `Dos diptongos seguidos`
+        ],
+        correctCombo: 1,
+        explanation: `«despreciéis» (des-pre-ciéis) reúne tres vocales en una sílaba (i + é + i) con la vocal abierta tónica en el centro.`
+      },
+      {
+        word: `teatro`,
+        before: `t`,
+        focus: `ea`,
+        after: `tro`,
+        correctCat: `Hiato`,
+        combos: [
+          `Cerrada átona + abierta tónica`,
+          `Abierta + cerrada átona`,
+          `Dos vocales iguales`,
+          `Dos vocales abiertas distintas (e + a)`
+        ],
+        correctCombo: 3,
+        explanation: `«teatro» (te-a-tro) separa dos vocales abiertas distintas (e-a) en sílabas diferentes: hiato simple.`
+      },
+      {
+        word: `pingüino`,
+        before: `ping`,
+        focus: `üi`,
+        after: `no`,
+        correctCat: `Diptongo`,
+        combos: [
+          `Dos cerradas distintas (ü + i) con diéresis`,
+          `La u es muda dentro del dígrafo gu`,
+          `Cerrada tónica + abierta`,
+          `Triptongo con diéresis`
+        ],
+        correctCombo: 0,
+        explanation: `La diéresis (ü) obliga a pronunciar la u ante i, creando el diptongo «güi» con dos vocales cerradas distintas.`
+      },
+      {
+        word: `ahijado`,
+        before: ``,
+        focus: `ahi`,
+        after: `jado`,
+        correctCat: `Diptongo`,
+        combos: [
+          `Hiato por presencia de la h intercalada`,
+          `Abierta + cerrada tónica`,
+          `Abierta (a) + cerrada átona (i) con h muda`,
+          `Sin secuencia vocálica`
+        ],
+        correctCombo: 2,
+        explanation: `«ahijado» (ahi-ja-do) une a + i átona en la primera sílaba; la h intercalada es muda y no rompe el diptongo.`
+      }
+    ];
+
+    const S2_CATEGORIES = [`Diptongo`, `Triptongo`, `Hiato`, `Sin secuencia vocálica`];
+
+    const S3_DATA = [
+      {
+        base: `maiz`,
+        clue: `Planta gramínea de uso alimenticio e industrial (aguda terminada en -z).`,
+        targetIdx: 2,
+        correctForm: `maíz`,
+        explanation: `Hiato acentual (a + í): aunque es aguda terminada en -z y no seguiría la regla general, la vocal cerrada tónica í siempre lleva tilde.`
+      },
+      {
+        base: `buho`,
+        clue: `Ave rapaz nocturna (palabra grave terminada en vocal, con h intercalada).`,
+        targetIdx: 1,
+        correctForm: `búho`,
+        explanation: `Hiato acentual (ú + o): lleva tilde obligatoria en la ú por ser vocal cerrada tónica junto a abierta átona; la h no lo impide.`
+      },
+      {
+        base: `teatro`,
+        clue: `Edificio o arte escénico (hiato simple de dos vocales abiertas).`,
+        targetIdx: null,
+        correctForm: `teatro`,
+        explanation: `No lleva tilde: «te-a-tro» tiene hiato simple de dos vocales abiertas (e-a) y sigue las reglas generales; es grave terminada en vocal.`
+      },
+      {
+        base: `campeon`,
+        clue: `Quien obtiene el primer puesto en una competencia (aguda en -n).`,
+        targetIdx: 5,
+        correctForm: `campeón`,
+        explanation: `Hiato simple (e + o): sigue las reglas generales; como es aguda terminada en -n, lleva tilde sobre la ó.`
+      },
+      {
+        base: `despues`,
+        clue: `Adverbio de tiempo (contiene diptongo y es aguda terminada en -s).`,
+        targetIdx: 5,
+        correctForm: `después`,
+        explanation: `Diptongo (u + e): sigue las reglas generales; por ser aguda terminada en -s, la tilde recae sobre la vocal abierta é.`
+      },
+      {
+        base: `jesuitico`,
+        clue: `Relativo a los jesuitas (esdrújula con diptongo de dos cerradas).`,
+        targetIdx: 4,
+        correctForm: `jesuítico`,
+        explanation: `Diptongo de dos cerradas (u + i) en palabra esdrújula (je-suí-ti-co): lleva tilde siempre y se ubica en la segunda vocal cerrada (í).`
+      },
+      {
+        base: `ataud`,
+        clue: `Caja de madera para sepultar a un difunto (aguda terminada en -d).`,
+        targetIdx: 3,
+        correctForm: `ataúd`,
+        explanation: `Hiato acentual (a + ú): la tilde especial sobre la cerrada tónica ú se impone aunque sea aguda terminada en -d.`
+      },
+      {
+        base: `guion`,
+        clue: `Signo ortográfico o texto de una obra audiovisual (RAE 2010).`,
+        targetIdx: null,
+        correctForm: `guion`,
+        explanation: `No lleva tilde: según la Ortografía de 2010, «guion» se considera monosílabo ortográfico (con diptongo io) y los monosílabos no se tildan.`
+      },
+      {
+        base: `averigüeis`,
+        clue: `Forma del verbo averiguar (triptongo agudo terminado en -s).`,
+        targetIdx: 7,
+        correctForm: `averigüéis`,
+        explanation: `Triptongo (ü + e + i): es aguda terminada en -s, por lo que lleva tilde en la vocal abierta central (é).`
+      },
+      {
+        base: `prohiben`,
+        clue: `Tercera persona plural del verbo prohibir (con h intercalada).`,
+        targetIdx: 4,
+        correctForm: `prohíben`,
+        explanation: `Hiato acentual (o + í): la vocal cerrada tónica í exige tilde obligatoria frente a la abierta átona o, aunque termine en -n.`
+      }
+    ];
+
+    const S4_TEXTS = [
+      {
+        id: `t1`,
+        title: `Nivel básico · En la cocina`,
+        subtitle: `8 palabras por tildar (hiatos acentuales y diptongo agudo)`,
+        tokens: [
+          { raw: `Ayer`, expected: `Ayer`, rule: null },
+          { raw: `preparé`, expected: `preparé`, rule: null },
+          { raw: `una`, expected: `una`, rule: null },
+          { raw: `sandia`, expected: `sandía`, rule: `Hiato acentual (í-a): tilde obligatoria en la cerrada tónica.` },
+          { raw: `muy`, expected: `muy`, rule: null },
+          { raw: `fria`, expected: `fría`, rule: `Hiato acentual (í-a): tilde obligatoria en la cerrada tónica.` },
+          { raw: `para`, expected: `para`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `merienda.`, expected: `merienda.`, rule: null },
+          { raw: `Mi`, expected: `Mi`, rule: null },
+          { raw: `tia`, expected: `tía`, rule: `Hiato acentual (í-a): tilde obligatoria en la í.` },
+          { raw: `Maria`, expected: `María`, rule: `Hiato acentual (í-a): tilde obligatoria en la í.` },
+          { raw: `me`, expected: `me`, rule: null },
+          { raw: `ayudó`, expected: `ayudó`, rule: null },
+          { raw: `a`, expected: `a`, rule: null },
+          { raw: `cortar`, expected: `cortar`, rule: null },
+          { raw: `el`, expected: `el`, rule: null },
+          { raw: `pan`, expected: `pan`, rule: null },
+          { raw: `con`, expected: `con`, rule: null },
+          { raw: `un`, expected: `un`, rule: null },
+          { raw: `cuchillo`, expected: `cuchillo`, rule: null },
+          { raw: `afilado.`, expected: `afilado.`, rule: null },
+          { raw: `El`, expected: `El`, rule: null },
+          { raw: `ruido`, expected: `ruido`, rule: null, noteIfEdited: `«ruido» lleva diptongo ui y es grave terminada en vocal: no lleva tilde.` },
+          { raw: `de`, expected: `de`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `lluvia`, expected: `lluvia`, rule: null },
+          { raw: `golpeaba`, expected: `golpeaba`, rule: null },
+          { raw: `el`, expected: `el`, rule: null },
+          { raw: `vidrio`, expected: `vidrio`, rule: null },
+          { raw: `mientras`, expected: `mientras`, rule: null },
+          { raw: `comiamos.`, expected: `comíamos.`, rule: `Hiato acentual (í-a) en pretérito imperfecto.` },
+          { raw: `Ella`, expected: `Ella`, rule: null },
+          { raw: `siempre`, expected: `siempre`, rule: null },
+          { raw: `dice`, expected: `dice`, rule: null },
+          { raw: `que`, expected: `que`, rule: null },
+          { raw: `el`, expected: `el`, rule: null },
+          { raw: `maiz`, expected: `maíz`, rule: `Hiato acentual (a-í): rompe la regla de las agudas.` },
+          { raw: `es`, expected: `es`, rule: null },
+          { raw: `muy`, expected: `muy`, rule: null },
+          { raw: `nutritivo.`, expected: `nutritivo.`, rule: null },
+          { raw: `Despues`, expected: `Después`, rule: `Diptongo ue en aguda terminada en -s: tilde en la abierta é.` },
+          { raw: `de`, expected: `de`, rule: null },
+          { raw: `limpiar,`, expected: `limpiar,`, rule: null },
+          { raw: `guardamos`, expected: `guardamos`, rule: null },
+          { raw: `todo`, expected: `todo`, rule: null },
+          { raw: `en`, expected: `en`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `estanteria.`, expected: `estantería.`, rule: `Hiato acentual (í-a) en la terminación -ía.` }
+        ]
+      },
+      {
+        id: `t2`,
+        title: `Nivel intermedio · Crónica de un invento`,
+        subtitle: `9 palabras por tildar (esdrújulas con diptongo y hiatos con h)`,
+        tokens: [
+          { raw: `El`, expected: `El`, rule: null },
+          { raw: `joven`, expected: `joven`, rule: null },
+          { raw: `cientifico`, expected: `científico`, rule: `Esdrújula con diptongo ie: lleva tilde en la abierta é.` },
+          { raw: `pasó`, expected: `pasó`, rule: null },
+          { raw: `veinte`, expected: `veinte`, rule: null, noteIfEdited: `«veinte» tiene diptongo ei y es grave en vocal: no lleva tilde.` },
+          { raw: `dias`, expected: `días`, rule: `Hiato acentual (í-a): tilde obligatoria en la í.` },
+          { raw: `en`, expected: `en`, rule: null },
+          { raw: `su`, expected: `su`, rule: null },
+          { raw: `laboratorio`, expected: `laboratorio`, rule: null },
+          { raw: `buscando`, expected: `buscando`, rule: null },
+          { raw: `una`, expected: `una`, rule: null },
+          { raw: `solución`, expected: `solución`, rule: null },
+          { raw: `para`, expected: `para`, rule: null },
+          { raw: `el`, expected: `el`, rule: null },
+          { raw: `transporte`, expected: `transporte`, rule: null },
+          { raw: `de`, expected: `de`, rule: null },
+          { raw: `energia.`, expected: `energía.`, rule: `Hiato acentual (í-a): tilde en la cerrada tónica.` },
+          { raw: `Su`, expected: `Su`, rule: null },
+          { raw: `vehiculo`, expected: `vehículo`, rule: `Hiato acentual (e-í) con h muda y palabra esdrújula.` },
+          { raw: `funcionaba`, expected: `funcionaba`, rule: null },
+          { raw: `con`, expected: `con`, rule: null },
+          { raw: `un`, expected: `un`, rule: null },
+          { raw: `sistema`, expected: `sistema`, rule: null },
+          { raw: `hidraulico`, expected: `hidráulico`, rule: `Esdrújula con diptongo áu: tilde en la abierta á.` },
+          { raw: `muy`, expected: `muy`, rule: null },
+          { raw: `complejo.`, expected: `complejo.`, rule: null },
+          { raw: `Aunque`, expected: `Aunque`, rule: null },
+          { raw: `parecía`, expected: `parecía`, rule: null },
+          { raw: `una`, expected: `una`, rule: null },
+          { raw: `utopia,`, expected: `utopía,`, rule: `Hiato acentual (í-a): tilde en la cerrada tónica.` },
+          { raw: `continuó`, expected: `continuó`, rule: null },
+          { raw: `trabajando`, expected: `trabajando`, rule: null },
+          { raw: `con`, expected: `con`, rule: null },
+          { raw: `ahinco.`, expected: `ahínco.`, rule: `Hiato acentual (a-í) con h intercalada muda.` },
+          { raw: `Durante`, expected: `Durante`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `evaluación,`, expected: `evaluación,`, rule: null },
+          { raw: `el`, expected: `el`, rule: null },
+          { raw: `comité`, expected: `comité`, rule: null },
+          { raw: `notó`, expected: `notó`, rule: null },
+          { raw: `que`, expected: `que`, rule: null },
+          { raw: `el`, expected: `el`, rule: null },
+          { raw: `motor`, expected: `motor`, rule: null },
+          { raw: `hacia`, expected: `hacía`, rule: `Hiato acentual (í-a) del verbo hacer; sin tilde sería preposición.` },
+          { raw: `un`, expected: `un`, rule: null },
+          { raw: `ruido`, expected: `ruido`, rule: null, noteIfEdited: `«ruido» es grave en vocal con diptongo ui: sin tilde.` },
+          { raw: `extraño,`, expected: `extraño,`, rule: null },
+          { raw: `pero`, expected: `pero`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `máquina`, expected: `máquina`, rule: null },
+          { raw: `arrancó`, expected: `arrancó`, rule: null },
+          { raw: `y`, expected: `y`, rule: null },
+          { raw: `demostró`, expected: `demostró`, rule: null },
+          { raw: `una`, expected: `una`, rule: null },
+          { raw: `eficacia`, expected: `eficacia`, rule: null },
+          { raw: `increible.`, expected: `increíble.`, rule: `Hiato acentual (e-í): tilde obligatoria en la cerrada tónica.` }
+        ]
+      },
+      {
+        id: `t3`,
+        title: `Nivel avanzado · La poética de la pausa`,
+        subtitle: `10 palabras por tildar (ensayo con hiatos acentuales y distractores)`,
+        tokens: [
+          { raw: `La`, expected: `La`, rule: null },
+          { raw: `creación`, expected: `creación`, rule: null },
+          { raw: `artística`, expected: `artística`, rule: null },
+          { raw: `habita`, expected: `habita`, rule: null },
+          { raw: `entre`, expected: `entre`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `realidad`, expected: `realidad`, rule: null },
+          { raw: `y`, expected: `y`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `fantasia.`, expected: `fantasía.`, rule: `Hiato acentual (í-a): tilde obligatoria en la í.` },
+          { raw: `Cada`, expected: `Cada`, rule: null },
+          { raw: `pausa`, expected: `pausa`, rule: null, noteIfEdited: `«pausa» tiene diptongo au y es grave en vocal: sin tilde.` },
+          { raw: `construye`, expected: `construye`, rule: null },
+          { raw: `una`, expected: `una`, rule: null },
+          { raw: `geografia`, expected: `geografía`, rule: `Hiato acentual (í-a): tilde obligatoria en la í.` },
+          { raw: `sentimental`, expected: `sentimental`, rule: null },
+          { raw: `donde`, expected: `donde`, rule: null },
+          { raw: `el`, expected: `el`, rule: null },
+          { raw: `frio`, expected: `frío`, rule: `Hiato acentual (í-o): tilde obligatoria en la cerrada tónica.` },
+          { raw: `del`, expected: `del`, rule: null },
+          { raw: `invierno`, expected: `invierno`, rule: null },
+          { raw: `y`, expected: `y`, rule: null },
+          { raw: `el`, expected: `el`, rule: null },
+          { raw: `hastio`, expected: `hastío`, rule: `Hiato acentual (í-o): tilde obligatoria en la cerrada tónica.` },
+          { raw: `de`, expected: `de`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `rutina`, expected: `rutina`, rule: null },
+          { raw: `se`, expected: `se`, rule: null },
+          { raw: `transforman`, expected: `transforman`, rule: null },
+          { raw: `en`, expected: `en`, rule: null },
+          { raw: `armonia.`, expected: `armonía.`, rule: `Hiato acentual (í-a): tilde obligatoria en la í.` },
+          { raw: `En`, expected: `En`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `época`, expected: `época`, rule: null },
+          { raw: `actual,`, expected: `actual,`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `tecnologia`, expected: `tecnología`, rule: `Hiato acentual (í-a): tilde obligatoria en la í.` },
+          { raw: `actua`, expected: `actúa`, rule: `Hiato acentual (ú-a): tilde en la cerrada tónica ú.` },
+          { raw: `como`, expected: `como`, rule: null },
+          { raw: `un`, expected: `un`, rule: null },
+          { raw: `fluido`, expected: `fluido`, rule: null, noteIfEdited: `Según la RAE 2010, «fluido» lleva diptongo ui y es grave en vocal: se escribe sin tilde.` },
+          { raw: `constante;`, expected: `constante;`, rule: null },
+          { raw: `sin`, expected: `sin`, rule: null },
+          { raw: `embargo,`, expected: `embargo,`, rule: null },
+          { raw: `debemos`, expected: `debemos`, rule: null },
+          { raw: `oir`, expected: `oír`, rule: `Hiato acentual (o-í): tilde en la í aunque termine en -r.` },
+          { raw: `nuestro`, expected: `nuestro`, rule: null },
+          { raw: `silencio`, expected: `silencio`, rule: null },
+          { raw: `interior`, expected: `interior`, rule: null },
+          { raw: `para`, expected: `para`, rule: null },
+          { raw: `volver`, expected: `volver`, rule: null },
+          { raw: `a`, expected: `a`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `raiz`, expected: `raíz`, rule: `Hiato acentual (a-í): tilde en la í aunque sea aguda en -z.` },
+          { raw: `de`, expected: `de`, rule: null },
+          { raw: `la`, expected: `la`, rule: null },
+          { raw: `sabiduria.`, expected: `sabiduría.`, rule: `Hiato acentual (í-a): tilde obligatoria en la í.` }
+        ]
+      }
+    ];
+
+    // ==============================
+    // ACCENT CONVERSION HELPERS
+    // ==============================
+    const ACCENT_MAP = {
+      'a': 'á', 'e': 'é', 'i': 'í', 'o': 'ó', 'u': 'ú',
+      'A': 'Á', 'E': 'É', 'I': 'Í', 'O': 'Ó', 'U': 'Ú'
+    };
+    const UNACCENT_MAP = {
+      'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+      'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U'
+    };
+    const VOWEL_REGEX = /^[aeiouáéíóúüAEIOUÁÉÍÓÚÜ]$/;
+
+    function isVowelChar(ch) {
+      return VOWEL_REGEX.test(ch);
+    }
+
+    function applyTildeAt(wordStr, idx) {
+      if (idx === null || idx === undefined) return wordStr;
+      const chars = Array.from(wordStr);
+      for (let i = 0; i < chars.length; i++) {
+        if (UNACCENT_MAP[chars[i]]) {
+          chars[i] = UNACCENT_MAP[chars[i]];
+        }
+      }
+      if (chars[idx] && ACCENT_MAP[chars[idx]]) {
+        chars[idx] = ACCENT_MAP[chars[idx]];
+      }
+      return chars.join('');
+    }
+
+    function stripAllTildes(wordStr) {
+      return Array.from(wordStr).map(function(ch) {
+        return UNACCENT_MAP[ch] ? UNACCENT_MAP[ch] : ch;
+      }).join('');
+    }
+
+    // ==============================
+    // APPLICATION STATE
+    // ==============================
+    const TOTAL_SESSION_SECONDS = 1800;
+
+    function createInitialState() {
+      return {
+        activeStation: 's1',
+        guideOpen: false,
+        secondsLeft: TOTAL_SESSION_SECONDS,
+        timerRunning: false,
+        timerExpired: false,
+        s1Index: 0,
+        s1Results: {}, // { idx: { cuts: [], checked: bool, correct: bool } }
+        s2Index: 0,
+        s2Results: {}, // { idx: { cat: str, comboIdx: num|null, checked: bool, correct: bool } }
+        s3Index: 0,
+        s3Results: {}, // { idx: { selectedIdx: num|null, noTilde: bool, checked: bool, correct: bool } }
+        s4ActiveText: 0,
+        s4SelectedToken: null,
+        s4Results: {
+          0: { edits: {}, checked: false, hits: 0, totalTargets: 8, falseEdits: 0 },
+          1: { edits: {}, checked: false, hits: 0, totalTargets: 9, falseEdits: 0 },
+          2: { edits: {}, checked: false, hits: 0, totalTargets: 10, falseEdits: 0 }
+        }
+      };
+    }
+
+    let appState = createInitialState();
+    let timerInterval = null;
+
+    // ==============================
+    // PERSISTENCE HELPERS
+    // ==============================
+    const STORAGE_KEY = 'taller-diptongos-hiatos/1';
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        // Sin almacenamiento disponible (modo privado).
+      }
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+        if (saved && typeof saved === 'object') {
+          const base = createInitialState();
+          appState = Object.assign({}, base, saved);
+          if (!appState.s4Results) appState.s4Results = base.s4Results;
+        }
+      } catch (e) {
+        // Estado corrupto o sin almacenamiento: se empieza de cero.
+      }
+    }
+
+    // ==============================
+    // TIMER ENGINE
+    // ==============================
+    function ensureTimerStarted() {
+      if (!appState.timerRunning && appState.secondsLeft > 0) {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      if (appState.secondsLeft <= 0) return;
+      appState.timerRunning = true;
+      updateTimerUI();
+      timerInterval = setInterval(function() {
+        if (appState.secondsLeft > 0) {
+          appState.secondsLeft -= 1;
+          if (appState.secondsLeft === 0) {
+            appState.timerRunning = false;
+            appState.timerExpired = true;
+            clearInterval(timerInterval);
+            timerInterval = null;
+          }
+          updateTimerUI();
+          if (appState.secondsLeft % 10 === 0 || appState.secondsLeft === 0) {
+            saveState();
+          }
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      appState.timerRunning = false;
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      updateTimerUI();
+      saveState();
+    }
+
+    function toggleTimer() {
+      if (appState.timerRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+        saveState();
+      }
+    }
+
+    function formatClock(totalSeconds) {
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      const mStr = mins < 10 ? `0${mins}` : `${mins}`;
+      const sStr = secs < 10 ? `0${secs}` : `${secs}`;
+      return `${mStr}:${sStr}`;
+    }
+
+    function updateTimerUI() {
+      const disp = document.getElementById('timer-display');
+      const tag = document.getElementById('timer-status-tag');
+      const bar = document.getElementById('timer-progress-bar');
+      const playIcon = document.getElementById('icon-timer-play');
+      const pauseIcon = document.getElementById('icon-timer-pause');
+      const banner = document.getElementById('time-banner');
+
+      if (disp) disp.textContent = formatClock(appState.secondsLeft);
+      if (tag) {
+        if (appState.secondsLeft === 0) {
+          tag.textContent = `Completado`;
+        } else if (appState.timerRunning) {
+          tag.textContent = `En curso`;
+        } else {
+          tag.textContent = `En pausa`;
+        }
+      }
+      if (bar) {
+        const elapsedPct = ((TOTAL_SESSION_SECONDS - appState.secondsLeft) / TOTAL_SESSION_SECONDS) * 100;
+        bar.style.width = `${Math.min(100, Math.max(0, elapsedPct))}%`;
+      }
+      if (playIcon && pauseIcon) {
+        playIcon.style.display = appState.timerRunning ? 'none' : 'block';
+        pauseIcon.style.display = appState.timerRunning ? 'block' : 'none';
+      }
+      if (banner) {
+        if (appState.timerExpired) {
+          banner.classList.add('is-visible');
+        } else {
+          banner.classList.remove('is-visible');
+        }
+      }
+    }
+
+    // ==============================
+    // NAVIGATION & GUIDE
+    // ==============================
+    function toggleGuide() {
+      appState.guideOpen = !appState.guideOpen;
+      renderGuideState();
+      saveState();
+    }
+
+    function renderGuideState() {
+      const drawer = document.getElementById('guide-drawer');
+      const label = document.getElementById('label-toggle-guide');
+      if (drawer) {
+        if (appState.guideOpen) drawer.classList.add('is-open');
+        else drawer.classList.remove('is-open');
+      }
+      if (label) {
+        label.textContent = appState.guideOpen ? `Ocultar guía rápida` : `Guía rápida de reglas`;
+      }
+    }
+
+    function switchStation(stationId) {
+      appState.activeStation = stationId;
+      const ids = ['s1', 's2', 's3', 's4', 'resumen'];
+      ids.forEach(function(id) {
+        const tab = document.getElementById(`tab-${id}`);
+        const panel = document.getElementById(`panel-${id}`);
+        if (tab) {
+          if (id === stationId) tab.classList.add('is-active');
+          else tab.classList.remove('is-active');
+        }
+        if (panel) {
+          if (id === stationId) panel.classList.add('is-active');
+          else panel.classList.remove('is-active');
+        }
+      });
+      if (stationId === 'resumen') {
+        renderSummary();
+      }
+      saveState();
+    }
+
+    function handleResetAll(btn) {
+      if (!btn) return;
+      if (btn.dataset.armed !== 'true') {
+        btn.dataset.armed = 'true';
+        btn.classList.remove('btn--secondary');
+        btn.classList.add('btn--danger');
+        const span = btn.querySelector('span');
+        if (span) span.textContent = `¿Confirmar reinicio?`;
+        setTimeout(function() {
+          if (btn.dataset.armed === 'true') {
+            btn.dataset.armed = 'false';
+            btn.classList.remove('btn--danger');
+            btn.classList.add('btn--secondary');
+            const s = btn.querySelector('span');
+            if (s) s.textContent = `Reiniciar sesión`;
+          }
+        }, 4000);
+        return;
+      }
+
+      btn.dataset.armed = 'false';
+      btn.classList.remove('btn--danger');
+      btn.classList.add('btn--secondary');
+      const span = btn.querySelector('span');
+      if (span) span.textContent = `Reiniciar sesión`;
+
+      pauseTimer();
+      appState = createInitialState();
+      renderAll();
+      saveState();
+    }
+
+    // ==============================
+    // SCORING & TELEMETRY
+    // ==============================
+    function computeScores() {
+      let s1Done = 0;
+      let s1Correct = 0;
+      for (let i = 0; i < S1_DATA.length; i++) {
+        const r = appState.s1Results[i];
+        if (r && r.checked) {
+          s1Done++;
+          if (r.correct) s1Correct++;
+        }
+      }
+      const s1Pts = s1Correct * 2.5;
+
+      let s2Done = 0;
+      let s2Correct = 0;
+      for (let i = 0; i < S2_DATA.length; i++) {
+        const r = appState.s2Results[i];
+        if (r && r.checked) {
+          s2Done++;
+          if (r.correct) s2Correct++;
+        }
+      }
+      const s2Pts = s2Correct * 2.5;
+
+      let s3Done = 0;
+      let s3Correct = 0;
+      for (let i = 0; i < S3_DATA.length; i++) {
+        const r = appState.s3Results[i];
+        if (r && r.checked) {
+          s3Done++;
+          if (r.correct) s3Correct++;
+        }
+      }
+      const s3Pts = s3Correct * 2.5;
+
+      let s4Done = 0;
+      let s4Hits = 0;
+      let s4TotalTargets = 0;
+      let s4FalseEdits = 0;
+      for (let t = 0; t < S4_TEXTS.length; t++) {
+        const res = appState.s4Results[t];
+        if (res && res.checked) {
+          s4Done++;
+          s4Hits += res.hits;
+          s4FalseEdits += res.falseEdits;
+        }
+        s4TotalTargets += S4_TEXTS[t].tokens.filter(function(tok) { return tok.rule !== null; }).length;
+      }
+      const rawS4Pts = s4TotalTargets > 0 ? ((s4Hits - s4FalseEdits * 0.5) / s4TotalTargets) * 25 : 0;
+      const s4Pts = Math.max(0, Math.round(rawS4Pts * 10) / 10);
+
+      const totalPts = Math.round((s1Pts + s2Pts + s3Pts + s4Pts) * 10) / 10;
+      const totalDone = s1Done + s2Done + s3Done + s4Done;
+      const totalItems = S1_DATA.length + S2_DATA.length + S3_DATA.length + S4_TEXTS.length; // 33
+
+      const attemptedUnits = s1Done + s2Done + s3Done + (s4Done > 0 ? s4Hits + (s4TotalTargets - s4Hits) : 0);
+      const correctUnits = s1Correct + s2Correct + s3Correct + s4Hits;
+      // Compute clean accuracy on checked items
+      const totalCheckedSimple = s1Done + s2Done + s3Done;
+      const totalCorrectSimple = s1Correct + s2Correct + s3Correct;
+      let accuracyPct = null;
+      if (totalCheckedSimple + (s4Done > 0 ? 1 : 0) > 0) {
+        const maxEarnedSoFar = (s1Done * 2.5) + (s2Done * 2.5) + (s3Done * 2.5) + (s4Done > 0 ? (function() {
+          let tChecked = 0;
+          for (let t = 0; t < S4_TEXTS.length; t++) {
+            if (appState.s4Results[t] && appState.s4Results[t].checked) {
+              tChecked += appState.s4Results[t].totalTargets;
+            }
+          }
+          return s4TotalTargets > 0 ? (tChecked / s4TotalTargets) * 25 : 0;
+        })() : 0);
+        accuracyPct = maxEarnedSoFar > 0 ? Math.round((totalPts / maxEarnedSoFar) * 100) : 0;
+      }
+
+      return {
+        s1Done, s1Correct, s1Pts,
+        s2Done, s2Correct, s2Pts,
+        s3Done, s3Correct, s3Pts,
+        s4Done, s4Hits, s4TotalTargets, s4FalseEdits, s4Pts,
+        totalPts, totalDone, totalItems, accuracyPct
+      };
+    }
+
+    function updateTelemetryUI() {
+      const sc = computeScores();
+      const scoreEl = document.getElementById('score-total');
+      const scoreNote = document.getElementById('score-note');
+      const itemsEl = document.getElementById('items-completed');
+      const itemsBar = document.getElementById('items-progress-bar');
+      const accEl = document.getElementById('accuracy-display');
+      const accNote = document.getElementById('accuracy-note');
+
+      if (scoreEl) scoreEl.textContent = sc.totalPts;
+      const pctDone = Math.round((sc.totalDone / sc.totalItems) * 100);
+      if (scoreNote) scoreNote.textContent = `${pctDone}% del taller completado`;
+      if (itemsEl) itemsEl.textContent = sc.totalDone;
+      if (itemsBar) itemsBar.style.width = `${pctDone}%`;
+
+      if (accEl && accNote) {
+        if (sc.accuracyPct === null) {
+          accEl.textContent = `—`;
+          accNote.textContent = `Responde para calcular`;
+        } else {
+          accEl.textContent = `${sc.accuracyPct}%`;
+          accNote.textContent = sc.accuracyPct >= 80 ? `¡Muy buena precisión!` : (sc.accuracyPct >= 60 ? `Buen ritmo, repasa errores` : `Consulta la guía de reglas`);
+        }
+      }
+
+      const b1 = document.getElementById('badge-s1');
+      const b2 = document.getElementById('badge-s2');
+      const b3 = document.getElementById('badge-s3');
+      const b4 = document.getElementById('badge-s4');
+      if (b1) b1.textContent = `${sc.s1Done}/${S1_DATA.length}`;
+      if (b2) b2.textContent = `${sc.s2Done}/${S2_DATA.length}`;
+      if (b3) b3.textContent = `${sc.s3Done}/${S3_DATA.length}`;
+      if (b4) b4.textContent = `${sc.s4Done}/${S4_TEXTS.length}`;
+    }
+
+    // ==============================
+    // STATION 1: SEPARACIÓN SILÁBICA
+    // ==============================
+    function getS1Entry(idx) {
+      if (!appState.s1Results[idx]) {
+        appState.s1Results[idx] = { cuts: [], checked: false, correct: false };
+      }
+      return appState.s1Results[idx];
+    }
+
+    function renderS1() {
+      const idx = appState.s1Index;
+      const item = S1_DATA[idx];
+      const entry = getS1Entry(idx);
+
+      const pillsEl = document.getElementById('s1-pills');
+      if (pillsEl) {
+        pillsEl.innerHTML = S1_DATA.map(function(d, i) {
+          const r = appState.s1Results[i];
+          let cls = 'item-pill';
+          if (i === idx) cls += ' is-current';
+          if (r && r.checked) cls += r.correct ? ' is-correct' : ' is-wrong';
+          return `<button type="button" class="${cls}" onclick="goS1(${i})" aria-label="Palabra ${i + 1}: ${d.word}">${i + 1}</button>`;
+        }).join('');
+      }
+
+      const counterEl = document.getElementById('s1-counter-label');
+      if (counterEl) counterEl.textContent = `Palabra ${idx + 1} de ${S1_DATA.length}`;
+
+      const hintEl = document.getElementById('s1-hint-text');
+      if (hintEl) hintEl.textContent = item.hint;
+
+      const boardEl = document.getElementById('s1-board');
+      if (boardEl) {
+        let html = '';
+        item.tokens.forEach(function(ch, cIdx) {
+          const vCls = isVowelChar(ch) ? 'syl-char syl-char--vowel' : 'syl-char';
+          html += `<span class="${vCls}">${ch}</span>`;
+          if (cIdx < item.tokens.length - 1) {
+            const isCut = entry.cuts.indexOf(cIdx) !== -1;
+            const cutCls = isCut ? 'syl-cut-btn is-cut' : 'syl-cut-btn';
+            html += `<button type="button" class="${cutCls}" onclick="toggleS1Cut(${cIdx})" aria-pressed="${isCut}" aria-label="Cortar después de ${ch}">${isCut ? '-' : '·'}</button>`;
+          }
+        });
+        boardEl.innerHTML = html;
+      }
+
+      updateS1Preview();
+      renderS1Feedback();
+    }
+
+    function updateS1Preview() {
+      const idx = appState.s1Index;
+      const item = S1_DATA[idx];
+      const entry = getS1Entry(idx);
+      const sortedCuts = entry.cuts.slice().sort(function(a, b) { return a - b; });
+
+      let out = '';
+      item.tokens.forEach(function(ch, cIdx) {
+        out += ch;
+        if (sortedCuts.indexOf(cIdx) !== -1) out += ' - ';
+      });
+
+      const prevEl = document.getElementById('s1-preview-text');
+      const countEl = document.getElementById('s1-syl-count');
+      const sylTotal = sortedCuts.length + 1;
+      if (prevEl) prevEl.textContent = out;
+      if (countEl) countEl.textContent = sylTotal === 1 ? `1 sílaba` : `${sylTotal} sílabas`;
+    }
+
+    function toggleS1Cut(cutIdx) {
+      ensureTimerStarted();
+      const entry = getS1Entry(appState.s1Index);
+      const pos = entry.cuts.indexOf(cutIdx);
+      if (pos === -1) {
+        entry.cuts.push(cutIdx);
+      } else {
+        entry.cuts.splice(pos, 1);
+      }
+      entry.checked = false;
+      renderS1();
+      saveState();
+    }
+
+    function clearS1Cuts() {
+      const entry = getS1Entry(appState.s1Index);
+      entry.cuts = [];
+      entry.checked = false;
+      entry.correct = false;
+      renderS1();
+      updateTelemetryUI();
+      saveState();
+    }
+
+    function checkS1() {
+      ensureTimerStarted();
+      const idx = appState.s1Index;
+      const item = S1_DATA[idx];
+      const entry = getS1Entry(idx);
+
+      const userSorted = entry.cuts.slice().sort(function(a, b) { return a - b; });
+      const targetSorted = item.correctCuts.slice().sort(function(a, b) { return a - b; });
+      const isMatch = userSorted.length === targetSorted.length && userSorted.every(function(v, i) { return v === targetSorted[i]; });
+
+      entry.checked = true;
+      entry.correct = isMatch;
+      renderS1();
+      updateTelemetryUI();
+      saveState();
+    }
+
+    function renderS1Feedback() {
+      const fb = document.getElementById('s1-feedback');
+      if (!fb) return;
+      const item = S1_DATA[appState.s1Index];
+      const entry = getS1Entry(appState.s1Index);
+
+      if (!entry.checked) {
+        fb.className = 'feedback-panel feedback-panel--info';
+        fb.innerHTML = `<div class="feedback-title">Instrucciones</div><p style="margin:0;">Marca los cortes silábicos tocando entre las letras y presiona <strong>Comprobar sílabas</strong> para recibir retroalimentación inmediata.</p>`;
+        return;
+      }
+
+      if (entry.correct) {
+        fb.className = 'feedback-panel feedback-panel--correct';
+        fb.innerHTML = `<div class="feedback-title">¡Separación correcta! (+2,5 pts)</div><p style="margin:0;">${item.explanation}</p>`;
+      } else {
+        fb.className = 'feedback-panel feedback-panel--wrong';
+        fb.innerHTML = `<div class="feedback-title">Revisa la separación</div><p style="margin:0;">${item.explanation}</p>`;
+      }
+    }
+
+    function goS1(i) {
+      appState.s1Index = i;
+      renderS1();
+      saveState();
+    }
+
+    function nextS1() {
+      if (appState.s1Index < S1_DATA.length - 1) {
+        appState.s1Index += 1;
+        renderS1();
+        saveState();
+      } else {
+        switchStation('s2');
+      }
+    }
+
+    // ==============================
+    // STATION 2: CLASIFICACIÓN
+    // ==============================
+    function getS2Entry(idx) {
+      if (!appState.s2Results[idx]) {
+        appState.s2Results[idx] = { cat: null, comboIdx: null, checked: false, correct: false };
+      }
+      return appState.s2Results[idx];
+    }
+
+    function renderS2() {
+      const idx = appState.s2Index;
+      const item = S2_DATA[idx];
+      const entry = getS2Entry(idx);
+
+      const pillsEl = document.getElementById('s2-pills');
+      if (pillsEl) {
+        pillsEl.innerHTML = S2_DATA.map(function(d, i) {
+          const r = appState.s2Results[i];
+          let cls = 'item-pill';
+          if (i === idx) cls += ' is-current';
+          if (r && r.checked) cls += r.correct ? ' is-correct' : ' is-wrong';
+          return `<button type="button" class="${cls}" onclick="goS2(${i})" aria-label="Palabra ${i + 1}: ${d.word}">${i + 1}</button>`;
+        }).join('');
+      }
+
+      const counterEl = document.getElementById('s2-counter-label');
+      if (counterEl) counterEl.textContent = `Palabra ${idx + 1} de ${S2_DATA.length}`;
+
+      const wordEl = document.getElementById('s2-word-display');
+      if (wordEl) {
+        wordEl.innerHTML = `${item.before}<span class="vowel-focus">${item.focus}</span>${item.after}`;
+      }
+
+      const catEl = document.getElementById('s2-cat-choices');
+      if (catEl) {
+        catEl.innerHTML = S2_CATEGORIES.map(function(cat) {
+          let cls = 'choice-btn';
+          if (entry.cat === cat) cls += ' is-selected';
+          if (entry.checked) {
+            if (cat === item.correctCat) cls += ' is-correct-choice';
+            else if (entry.cat === cat && cat !== item.correctCat) cls += ' is-wrong-choice';
+          }
+          return `<button type="button" class="${cls}" onclick="selectS2Cat('${cat}')">${cat}</button>`;
+        }).join('');
+      }
+
+      const comboEl = document.getElementById('s2-combo-choices');
+      if (comboEl) {
+        comboEl.innerHTML = item.combos.map(function(cText, cIdx) {
+          let cls = 'choice-btn';
+          if (entry.comboIdx === cIdx) cls += ' is-selected';
+          if (entry.checked) {
+            if (cIdx === item.correctCombo) cls += ' is-correct-choice';
+            else if (entry.comboIdx === cIdx && cIdx !== item.correctCombo) cls += ' is-wrong-choice';
+          }
+          return `<button type="button" class="${cls}" onclick="selectS2Combo(${cIdx})">${cText}</button>`;
+        }).join('');
+      }
+
+      renderS2Feedback();
+    }
+
+    function selectS2Cat(cat) {
+      ensureTimerStarted();
+      const entry = getS2Entry(appState.s2Index);
+      entry.cat = cat;
+      entry.checked = false;
+      renderS2();
+      saveState();
+    }
+
+    function selectS2Combo(cIdx) {
+      ensureTimerStarted();
+      const entry = getS2Entry(appState.s2Index);
+      entry.comboIdx = cIdx;
+      entry.checked = false;
+      renderS2();
+      saveState();
+    }
+
+    function checkS2() {
+      ensureTimerStarted();
+      const idx = appState.s2Index;
+      const item = S2_DATA[idx];
+      const entry = getS2Entry(idx);
+
+      if (entry.cat === null || entry.comboIdx === null) {
+        const fb = document.getElementById('s2-feedback');
+        if (fb) {
+          fb.className = 'feedback-panel feedback-panel--wrong';
+          fb.innerHTML = `<div class="feedback-title">Falta completar</div><p style="margin:0;">Selecciona primero tanto el fenómeno vocálico (paso 1) como su combinación exacta (paso 2).</p>`;
+        }
+        return;
+      }
+
+      entry.checked = true;
+      entry.correct = (entry.cat === item.correctCat && entry.comboIdx === item.correctCombo);
+      renderS2();
+      updateTelemetryUI();
+      saveState();
+    }
+
+    function renderS2Feedback() {
+      const fb = document.getElementById('s2-feedback');
+      if (!fb) return;
+      const item = S2_DATA[appState.s2Index];
+      const entry = getS2Entry(appState.s2Index);
+
+      if (!entry.checked) {
+        fb.className = 'feedback-panel feedback-panel--info';
+        fb.innerHTML = `<div class="feedback-title">Instrucciones</div><p style="margin:0;">Elige la categoría y la fórmula vocálica que corresponden a la secuencia resaltada en amarillo.</p>`;
+        return;
+      }
+
+      if (entry.correct) {
+        fb.className = 'feedback-panel feedback-panel--correct';
+        fb.innerHTML = `<div class="feedback-title">¡Clasificación exacta! (+2,5 pts)</div><p style="margin:0;">${item.explanation}</p>`;
+      } else {
+        fb.className = 'feedback-panel feedback-panel--wrong';
+        fb.innerHTML = `<div class="feedback-title">Revisa la combinación</div><p style="margin:0;">Respuesta esperada: <strong>${item.correctCat}</strong> (${item.combos[item.correctCombo]}). ${item.explanation}</p>`;
+      }
+    }
+
+    function goS2(i) {
+      appState.s2Index = i;
+      renderS2();
+      saveState();
+    }
+
+    function nextS2() {
+      if (appState.s2Index < S2_DATA.length - 1) {
+        appState.s2Index += 1;
+        renderS2();
+        saveState();
+      } else {
+        switchStation('s3');
+      }
+    }
+
+    // ==============================
+    // STATION 3: TILDACIÓN ESPECIAL
+    // ==============================
+    function getS3Entry(idx) {
+      if (!appState.s3Results[idx]) {
+        appState.s3Results[idx] = { selectedIdx: null, noTilde: false, checked: false, correct: false };
+      }
+      return appState.s3Results[idx];
+    }
+
+    function renderS3() {
+      const idx = appState.s3Index;
+      const item = S3_DATA[idx];
+      const entry = getS3Entry(idx);
+
+      const pillsEl = document.getElementById('s3-pills');
+      if (pillsEl) {
+        pillsEl.innerHTML = S3_DATA.map(function(d, i) {
+          const r = appState.s3Results[i];
+          let cls = 'item-pill';
+          if (i === idx) cls += ' is-current';
+          if (r && r.checked) cls += r.correct ? ' is-correct' : ' is-wrong';
+          return `<button type="button" class="${cls}" onclick="goS3(${i})" aria-label="Palabra ${i + 1}: ${d.base}">${i + 1}</button>`;
+        }).join('');
+      }
+
+      const counterEl = document.getElementById('s3-counter-label');
+      if (counterEl) counterEl.textContent = `Palabra ${idx + 1} de ${S3_DATA.length}`;
+
+      const clueEl = document.getElementById('s3-context-clue');
+      if (clueEl) clueEl.textContent = item.clue;
+
+      const rowEl = document.getElementById('s3-letter-row');
+      if (rowEl) {
+        const chars = Array.from(item.base);
+        rowEl.innerHTML = chars.map(function(ch, cIdx) {
+          if (isVowelChar(ch) && ch !== 'ü') {
+            const isSel = !entry.noTilde && entry.selectedIdx === cIdx;
+            const shown = isSel ? (ACCENT_MAP[ch] || ch) : ch;
+            const cls = isSel ? 'letter-tile letter-tile--vowel is-accented' : 'letter-tile letter-tile--vowel';
+            return `<button type="button" class="${cls}" onclick="selectS3Vowel(${cIdx})" aria-pressed="${isSel}" aria-label="Tildar vocal ${ch}">${shown}</button>`;
+          }
+          return `<span class="letter-tile">${ch}</span>`;
+        }).join('');
+      }
+
+      const noBtn = document.getElementById('s3-no-tilde-btn');
+      if (noBtn) {
+        if (entry.noTilde) {
+          noBtn.classList.remove('btn--secondary');
+          noBtn.classList.add('btn--blue');
+        } else {
+          noBtn.classList.remove('btn--blue');
+          noBtn.classList.add('btn--secondary');
+        }
+      }
+
+      renderS3Feedback();
+    }
+
+    function selectS3Vowel(cIdx) {
+      ensureTimerStarted();
+      const entry = getS3Entry(appState.s3Index);
+      entry.selectedIdx = cIdx;
+      entry.noTilde = false;
+      entry.checked = false;
+      renderS3();
+      saveState();
+    }
+
+    function selectS3NoTilde() {
+      ensureTimerStarted();
+      const entry = getS3Entry(appState.s3Index);
+      entry.selectedIdx = null;
+      entry.noTilde = true;
+      entry.checked = false;
+      renderS3();
+      saveState();
+    }
+
+    function checkS3() {
+      ensureTimerStarted();
+      const idx = appState.s3Index;
+      const item = S3_DATA[idx];
+      const entry = getS3Entry(idx);
+
+      if (!entry.noTilde && entry.selectedIdx === null) {
+        const fb = document.getElementById('s3-feedback');
+        if (fb) {
+          fb.className = 'feedback-panel feedback-panel--wrong';
+          fb.innerHTML = `<div class="feedback-title">Elige una opción</div><p style="margin:0;">Haz clic sobre la vocal que lleva tilde o presiona <strong>No lleva tilde</strong>.</p>`;
+        }
+        return;
+      }
+
+      entry.checked = true;
+      if (item.targetIdx === null) {
+        entry.correct = entry.noTilde === true;
+      } else {
+        entry.correct = !entry.noTilde && entry.selectedIdx === item.targetIdx;
+      }
+
+      renderS3();
+      updateTelemetryUI();
+      saveState();
+    }
+
+    function renderS3Feedback() {
+      const fb = document.getElementById('s3-feedback');
+      if (!fb) return;
+      const item = S3_DATA[appState.s3Index];
+      const entry = getS3Entry(appState.s3Index);
+
+      if (!entry.checked) {
+        fb.className = 'feedback-panel feedback-panel--info';
+        fb.innerHTML = `<div class="feedback-title">Instrucciones</div><p style="margin:0;">Toca una vocal para colocar la tilde gráfica, o selecciona <strong>No lleva tilde</strong>.</p>`;
+        return;
+      }
+
+      if (entry.correct) {
+        fb.className = 'feedback-panel feedback-panel--correct';
+        fb.innerHTML = `<div class="feedback-title">¡Correcto: «${item.correctForm}»! (+2,5 pts)</div><p style="margin:0;">${item.explanation}</p>`;
+      } else {
+        fb.className = 'feedback-panel feedback-panel--wrong';
+        fb.innerHTML = `<div class="feedback-title">Forma correcta: «${item.correctForm}»</div><p style="margin:0;">${item.explanation}</p>`;
+      }
+    }
+
+    function goS3(i) {
+      appState.s3Index = i;
+      renderS3();
+      saveState();
+    }
+
+    function nextS3() {
+      if (appState.s3Index < S3_DATA.length - 1) {
+        appState.s3Index += 1;
+        renderS3();
+        saveState();
+      } else {
+        switchStation('s4');
+      }
+    }
+
+    // ==============================
+    // STATION 4: CORRECCIÓN DE TEXTOS
+    // ==============================
+    function renderS4() {
+      const tIdx = appState.s4ActiveText;
+      const textObj = S4_TEXTS[tIdx];
+      const res = appState.s4Results[tIdx];
+
+      const tabsEl = document.getElementById('s4-level-tabs');
+      if (tabsEl) {
+        tabsEl.innerHTML = S4_TEXTS.map(function(t, i) {
+          const r = appState.s4Results[i];
+          const isAct = i === tIdx;
+          let cls = isAct ? 'btn btn--yellow' : 'btn btn--secondary';
+          const status = r && r.checked ? ` · ${r.hits}/${r.totalTargets}` : ``;
+          return `<button type="button" class="${cls}" onclick="selectS4Text(${i})">${t.title}${status}</button>`;
+        }).join('');
+      }
+
+      const passEl = document.getElementById('s4-passage');
+      if (passEl) {
+        passEl.innerHTML = textObj.tokens.map(function(tok, wIdx) {
+          const editedVal = res.edits[wIdx];
+          const displayWord = editedVal ? editedVal : tok.raw;
+          let cls = 'word-token';
+          if (appState.s4SelectedToken === wIdx) cls += ' is-active-edit';
+
+          if (res.checked) {
+            const needsChange = tok.raw !== tok.expected;
+            if (needsChange && displayWord === tok.expected) {
+              cls += ' is-verified-ok';
+            } else if (needsChange && displayWord !== tok.expected) {
+              cls += ' is-verified-miss';
+            } else if (!needsChange && displayWord !== tok.expected) {
+              cls += ' is-verified-false';
+            }
+          } else if (editedVal && editedVal !== tok.raw) {
+            cls += ' is-edited';
+          }
+
+          return `<button type="button" class="${cls}" onclick="openS4WordEditor(${wIdx})">${displayWord}</button>`;
+        }).join(' ');
+      }
+
+      renderS4Editor();
+      renderS4Feedback();
+    }
+
+    function selectS4Text(i) {
+      appState.s4ActiveText = i;
+      appState.s4SelectedToken = null;
+      renderS4();
+      saveState();
+    }
+
+    function openS4WordEditor(wIdx) {
+      ensureTimerStarted();
+      appState.s4SelectedToken = wIdx;
+      renderS4();
+    }
+
+    function renderS4Editor() {
+      const editorEl = document.getElementById('s4-editor');
+      const prevEl = document.getElementById('s4-editor-preview');
+      const vowelsEl = document.getElementById('s4-editor-vowels');
+      if (!editorEl || !prevEl || !vowelsEl) return;
+
+      const tIdx = appState.s4ActiveText;
+      const wIdx = appState.s4SelectedToken;
+      if (wIdx === null || wIdx === undefined) {
+        editorEl.style.display = 'none';
+        return;
+      }
+
+      const tok = S4_TEXTS[tIdx].tokens[wIdx];
+      const res = appState.s4Results[tIdx];
+      const currentVal = res.edits[wIdx] ? res.edits[wIdx] : tok.raw;
+
+      editorEl.style.display = 'block';
+      prevEl.textContent = currentVal;
+
+      const chars = Array.from(currentVal);
+      let buttonsHtml = '';
+      chars.forEach(function(ch, cIdx) {
+        if (isVowelChar(ch) && ch !== 'ü') {
+          const baseCh = UNACCENT_MAP[ch] ? UNACCENT_MAP[ch] : ch;
+          const accentedCh = ACCENT_MAP[baseCh] ? ACCENT_MAP[baseCh] : ch;
+          const isTilded = ch === accentedCh;
+          const cls = isTilded ? 'btn btn--primary' : 'btn btn--secondary';
+          buttonsHtml += `<button type="button" class="${cls}" onclick="setS4WordTilde(${wIdx}, ${cIdx})">${accentedCh}</button>`;
+        }
+      });
+
+      buttonsHtml += `<button type="button" class="btn btn--secondary" onclick="clearS4WordTilde(${wIdx})">Dejar sin cambios</button>`;
+      vowelsEl.innerHTML = buttonsHtml;
+    }
+
+    function setS4WordTilde(wIdx, charIdx) {
+      ensureTimerStarted();
+      const tIdx = appState.s4ActiveText;
+      const tok = S4_TEXTS[tIdx].tokens[wIdx];
+      const res = appState.s4Results[tIdx];
+      // Apply tilde relative to the raw word or stripped base unless raw already had an intentional tilde
+      const baseForEdit = tok.raw === tok.expected ? stripAllTildes(tok.raw) : tok.raw;
+      const updated = applyTildeAt(baseForEdit, charIdx);
+      res.edits[wIdx] = updated;
+      res.checked = false;
+      renderS4();
+      saveState();
+    }
+
+    function clearS4WordTilde(wIdx) {
+      const tIdx = appState.s4ActiveText;
+      const res = appState.s4Results[tIdx];
+      delete res.edits[wIdx];
+      res.checked = false;
+      renderS4();
+      saveState();
+    }
+
+    function resetS4CurrentText() {
+      const tIdx = appState.s4ActiveText;
+      const targets = S4_TEXTS[tIdx].tokens.filter(function(tok) { return tok.rule !== null; }).length;
+      appState.s4Results[tIdx] = { edits: {}, checked: false, hits: 0, totalTargets: targets, falseEdits: 0 };
+      appState.s4SelectedToken = null;
+      renderS4();
+      updateTelemetryUI();
+      saveState();
+    }
+
+    function checkS4Text() {
+      ensureTimerStarted();
+      const tIdx = appState.s4ActiveText;
+      const textObj = S4_TEXTS[tIdx];
+      const res = appState.s4Results[tIdx];
+
+      let hits = 0;
+      let totalTargets = 0;
+      let falseEdits = 0;
+
+      textObj.tokens.forEach(function(tok, wIdx) {
+        const userWord = res.edits[wIdx] ? res.edits[wIdx] : tok.raw;
+        const needsChange = tok.raw !== tok.expected;
+        if (needsChange) {
+          totalTargets++;
+          if (userWord === tok.expected) hits++;
+        } else {
+          if (userWord !== tok.expected) falseEdits++;
+        }
+      });
+
+      res.checked = true;
+      res.hits = hits;
+      res.totalTargets = totalTargets;
+      res.falseEdits = falseEdits;
+
+      renderS4();
+      updateTelemetryUI();
+      saveState();
+    }
+
+    function renderS4Feedback() {
+      const fb = document.getElementById('s4-feedback');
+      const bd = document.getElementById('s4-breakdown');
+      if (!fb || !bd) return;
+
+      const tIdx = appState.s4ActiveText;
+      const textObj = S4_TEXTS[tIdx];
+      const res = appState.s4Results[tIdx];
+
+      if (!res.checked) {
+        fb.className = 'feedback-panel feedback-panel--info';
+        fb.innerHTML = `<div class="feedback-title">${textObj.subtitle}</div><p style="margin:0;">Haz clic sobre las palabras en el párrafo para tildarlas y luego presiona <strong>Verificar texto</strong>.</p>`;
+        bd.innerHTML = '';
+        return;
+      }
+
+      const perfect = res.hits === res.totalTargets && res.falseEdits === 0;
+      fb.className = perfect ? 'feedback-panel feedback-panel--correct' : 'feedback-panel feedback-panel--wrong';
+      const falseNote = res.falseEdits > 0 ? ` Además, editaste ${res.falseEdits} palabra(s) que no llevaban tilde.` : ``;
+      fb.innerHTML = `<div class="feedback-title">${perfect ? '¡Texto corregido con precisión!' : 'Resultado de la revisión'}</div><p style="margin:0;">Corregiste correctamente <strong>${res.hits} de ${res.totalTargets}</strong> palabras objetivo.${falseNote}</p>`;
+
+      let itemsHtml = '';
+      textObj.tokens.forEach(function(tok, wIdx) {
+        const userWord = res.edits[wIdx] ? res.edits[wIdx] : tok.raw;
+        if (tok.rule !== null) {
+          const ok = userWord === tok.expected;
+          itemsHtml += `<div class="correction-item ${ok ? 'correction-item--ok' : 'correction-item--miss'}">
+            <strong>${tok.expected}</strong> ${ok ? '✓' : `(escribiste: ${userWord})`}<br>
+            <span style="color:var(--on-surface-variant);">${tok.rule}</span>
+          </div>`;
+        } else if (userWord !== tok.expected && tok.noteIfEdited) {
+          itemsHtml += `<div class="correction-item correction-item--miss">
+            <strong>${tok.expected}</strong> (no debía modificarse)<br>
+            <span style="color:var(--on-surface-variant);">${tok.noteIfEdited}</span>
+          </div>`;
+        }
+      });
+      bd.innerHTML = itemsHtml;
+    }
+
+    // ==============================
+    // SUMMARY & OVERPRINT CHART
+    // ==============================
+    function renderSummary() {
+      const sc = computeScores();
+      const verdictEl = document.getElementById('summary-verdict');
+      const tbodyEl = document.getElementById('summary-table-body');
+      const diagBox = document.getElementById('diagnostic-box');
+      const diagText = document.getElementById('diagnostic-text');
+      const chartBox = document.getElementById('summary-chart-container');
+
+      const elapsedSeconds = TOTAL_SESSION_SECONDS - appState.secondsLeft;
+      const usedClock = formatClock(elapsedSeconds);
+
+      if (verdictEl) {
+        verdictEl.textContent = `Puntaje acumulado: ${sc.totalPts} / 100 puntos · Tiempo invertido: ${usedClock} de 30:00.`;
+      }
+
+      if (tbodyEl) {
+        tbodyEl.innerHTML = `
+          <tr>
+            <td>1. Separación silábica</td>
+            <td>${sc.s1Done} / ${S1_DATA.length}</td>
+            <td><strong>${sc.s1Pts}</strong> / 25</td>
+          </tr>
+          <tr>
+            <td>2. Clasificación vocálica</td>
+            <td>${sc.s2Done} / ${S2_DATA.length}</td>
+            <td><strong>${sc.s2Pts}</strong> / 25</td>
+          </tr>
+          <tr>
+            <td>3. Tildación especial</td>
+            <td>${sc.s3Done} / ${S3_DATA.length}</td>
+            <td><strong>${sc.s3Pts}</strong> / 25</td>
+          </tr>
+          <tr>
+            <td>4. Corrección de textos</td>
+            <td>${sc.s4Done} / ${S4_TEXTS.length} textos</td>
+            <td><strong>${sc.s4Pts}</strong> / 25</td>
+          </tr>
+          <tr class="is-highlight">
+            <td>Total de la sesión</td>
+            <td>${sc.totalDone} / ${sc.totalItems}</td>
+            <td>${sc.totalPts} / 100</td>
+          </tr>
+        `;
+      }
+
+      if (diagBox && diagText) {
+        if (sc.totalDone === 0) {
+          diagBox.className = 'feedback-panel feedback-panel--info';
+          diagText.textContent = `Aún no has verificado ejercicios. Empieza por la Estación 1 para construir tu diagnóstico.`;
+        } else if (sc.totalPts >= 85) {
+          diagBox.className = 'feedback-panel feedback-panel--correct';
+          diagText.textContent = `¡Excelente desempeño! Dominas la distinción entre diptongos, triptongos e hiatos, incluida la regla especial de los hiatos acentuales y la h intercalada.`;
+        } else if (sc.totalPts >= 60) {
+          diagBox.className = 'feedback-panel feedback-panel--info';
+          diagText.textContent = `Buen avance general. Revisa con atención los hiatos acentuales (vocal cerrada tónica siempre con tilde) y los casos especiales como «guion» o la u muda en «queso».`;
+        } else {
+          diagBox.className = 'feedback-panel feedback-panel--wrong';
+          diagText.textContent = `Conviene repasar la Guía Rápida: recuerda que las vocales abiertas (a, e, o) separadas forman hiato y que una cerrada tónica (í, ú) junto a una abierta siempre lleva tilde.`;
+        }
+      }
+
+      if (chartBox) {
+        const series = [
+          { label: `Estación 1: Sílabas`, val: sc.s1Pts, cls: `mark` },
+          { label: `Estación 2: Clasificación`, val: sc.s2Pts, cls: `mark series-2` },
+          { label: `Estación 3: Tildación`, val: sc.s3Pts, cls: `mark series-3` },
+          { label: `Estación 4: Textos`, val: sc.s4Pts, cls: `mark series-4` }
+        ];
+        const maxBarW = 240;
+        let svgRows = '';
+        series.forEach(function(s, i) {
+          const y = 34 + i * 56;
+          const barW = Math.max(4, (s.val / 25) * maxBarW);
+          svgRows += `
+            <text x="10" y="${y + 18}" class="chart-label">${s.label}</text>
+            <rect x="195" y="${y}" width="${maxBarW}" height="26" fill="none" stroke="var(--outline-variant)" stroke-dasharray="3 3" />
+            <rect x="195" y="${y}" width="${barW}" height="26" class="${s.cls}" />
+            <rect x="199" y="${y + 3}" width="${barW}" height="20" class="mark" style="opacity:0.25;" />
+            <text x="${195 + maxBarW + 12}" y="${y + 18}" class="chart-value">${s.val}/25</text>
+          `;
+        });
+
+        chartBox.innerHTML = `
+          <svg class="chart" viewBox="0 0 510 265" width="100%" height="265" role="img" aria-label="Gráfico de puntaje por estación sobre 25 puntos">
+            <line x1="195" y1="20" x2="195" y2="248" stroke="var(--outline)" stroke-width="2" />
+            <line x1="195" y1="248" x2="455" y2="248" stroke="var(--outline)" stroke-width="2" />
+            ${svgRows}
+          </svg>
+        `;
+      }
+    }
+
+    function exportSummaryReport() {
+      const sc = computeScores();
+      const elapsedSeconds = TOTAL_SESSION_SECONDS - appState.secondsLeft;
+      const lines = [
+        `REPORTE DE PRÁCTICA · DIPTONGOS, TRIPTONGOS E HIATOS`,
+        `====================================================`,
+        `Tiempo utilizado: ${formatClock(elapsedSeconds)} / 30:00`,
+        `Progreso total: ${sc.totalDone} / ${sc.totalItems} actividades`,
+        `Puntuación final: ${sc.totalPts} / 100 puntos`,
+        ``,
+        `Desglose por estación:`,
+        `- Estación 1 (Separación silábica): ${sc.s1Pts} / 25 pts (${sc.s1Correct}/${S1_DATA.length} aciertos)`,
+        `- Estación 2 (Clasificación vocálica): ${sc.s2Pts} / 25 pts (${sc.s2Correct}/${S2_DATA.length} aciertos)`,
+        `- Estación 3 (Tildación especial): ${sc.s3Pts} / 25 pts (${sc.s3Correct}/${S3_DATA.length} aciertos)`,
+        `- Estación 4 (Corrección de textos): ${sc.s4Pts} / 25 pts (${sc.s4Hits}/${sc.s4TotalTargets} correcciones)`
+      ].join('\n');
+
+      const blob = new Blob([lines], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'reporte-diptongos-hiatos.txt';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    }
+
+    // ==============================
+    // RENDER ALL & BOOTSTRAP
+    // ==============================
+    function renderAll() {
+      updateTimerUI();
+      renderGuideState();
+      updateTelemetryUI();
+      renderS1();
+      renderS2();
+      renderS3();
+      renderS4();
+      switchStation(appState.activeStation || 's1');
+    }
+
+    async function initApp() {
+      await loadState();
+      renderAll();
+      if (appState.timerRunning && appState.secondsLeft > 0) {
+        startTimer();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
